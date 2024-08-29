@@ -22,6 +22,7 @@ pub mod elem;
 pub mod traits;
 pub mod types;
 
+#[allow(unused_imports)]
 pub mod prelude {
     pub use super::elem::prelude::*;
     pub use crate::traits::prelude::*;
