@@ -53,7 +53,7 @@ test = true
 [dependencies.rspace-core]
 default-features = false
 path = "../core"
-version = "0.0.0"
+version = "0.0.1"
 
 [dependencies.serde]
 default-features = false
