@@ -28,12 +28,12 @@ jobs:
       matrix:
         CRATE_SUFFIX: [ core ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: cargo publish --all-features -v -p ${{ env.CRATE_NAME }}
   publish:
     name: Publish SDK
     needs: core
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: cargo publish --all-features -v -p ${{ github.event.repository.name }}
