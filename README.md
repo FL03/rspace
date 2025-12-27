@@ -1,11 +1,8 @@
 # rspace
 
-[![crates.io](https://img.shields.io/crates/v/rspace.svg)](https://crates.io/crates/rspace)
-[![docs.rs](https://docs.rs/rspace/badge.svg)](https://docs.rs/rspace)
-[![license](https://img.shields.io/crates/l/rspace.svg)](https://crates.io/crates/rspace)
-
-[![clippy](https://github.com/FL03/rspace/actions/workflows/clippy.yml/badge.svg)](https://github.com/FL03/rspace/actions/workflows/clippy.yml)
-[![rust](https://github.com/FL03/rspace/actions/workflows/rust.yml/badge.svg)](https://github.com/FL03/rspace/actions/workflows/rust.yml)
+[![crates.io](https://img.shields.io/crates/v/rspace?style=for-the-badge&logo=rust)](https://crates.io/crates/rspace)
+[![docs.rs](https://img.shields.io/docsrs/rspace?style=for-the-badge&logo=docs.rs)](https://docs.rs/rspace)
+[![GitHub License](https://img.shields.io/github/license/FL03/rspace?style=for-the-badge&logo=github)](LICENSE)
 
 ***
 
