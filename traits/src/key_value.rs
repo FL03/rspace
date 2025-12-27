@@ -7,14 +7,16 @@
 //!
 
 /// [`KeyValueEntry`] establishes a common interface for entries within a key-value store.
-pub trait KeyValueEntry<'a> {
+pub trait StoreEntry<'a> {
     type Key;
     type Value;
 }
 
-/// The [`KeyValueStore`] trait is used to define a key-value store container.
-pub trait KeyValueStore<K, V> {
-    type Entry<'a>: KeyValueEntry<'a, Key = K, Value = V>
+pub trait RawStore<K, V> {}
+
+/// The [`Store`] trait is used to define a key-value store container.
+pub trait Store<K, V> {
+    type Entry<'a>: StoreEntry<'a, Key = K, Value = V>
     where
         Self: 'a;
 }
@@ -25,15 +27,15 @@ pub trait KeyValueStore<K, V> {
 
 #[cfg(feature = "alloc")]
 mod impl_alloc {
-    use super::{KeyValueEntry, KeyValueStore};
+    use super::{StoreEntry, Store};
     use alloc::collections::btree_map::{self, BTreeMap};
 
-    impl<'a, K, V> KeyValueEntry<'a> for btree_map::Entry<'a, K, V> {
+    impl<'a, K, V> StoreEntry<'a> for btree_map::Entry<'a, K, V> {
         type Key = K;
         type Value = V;
     }
 
-    impl<K, V> KeyValueStore<K, V> for BTreeMap<K, V> {
+    impl<K, V> Store<K, V> for BTreeMap<K, V> {
         type Entry<'a>
             = btree_map::Entry<'a, K, V>
         where
@@ -43,15 +45,15 @@ mod impl_alloc {
 
 #[cfg(feature = "hashbrown")]
 mod impl_hashbrown {
-    use super::{KeyValueEntry, KeyValueStore};
+    use super::{StoreEntry, Store};
     use hashbrown::hash_map::{self, HashMap};
 
-    impl<'a, K, V, S> KeyValueEntry<'a> for hash_map::Entry<'a, K, V, S> {
+    impl<'a, K, V, S> StoreEntry<'a> for hash_map::Entry<'a, K, V, S> {
         type Key = K;
         type Value = V;
     }
 
-    impl<K, V, S> KeyValueStore<K, V> for HashMap<K, V, S> {
+    impl<K, V, S> Store<K, V> for HashMap<K, V, S> {
         type Entry<'a>
             = hash_map::Entry<'a, K, V, S>
         where
@@ -61,15 +63,15 @@ mod impl_hashbrown {
 
 #[cfg(feature = "std")]
 mod impl_std {
-    use super::{KeyValueEntry, KeyValueStore};
+    use super::{StoreEntry, Store};
     use std::collections::hash_map::{self, HashMap};
 
-    impl<'a, K, V> KeyValueEntry<'a> for hash_map::Entry<'a, K, V> {
+    impl<'a, K, V> StoreEntry<'a> for hash_map::Entry<'a, K, V> {
         type Key = K;
         type Value = V;
     }
 
-    impl<K, V> KeyValueStore<K, V> for HashMap<K, V> {
+    impl<K, V> Store<K, V> for HashMap<K, V> {
         type Entry<'a>
             = hash_map::Entry<'a, K, V>
         where
