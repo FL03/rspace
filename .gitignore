@@ -1,74 +1,97 @@
-# Artifacts
+# General
 
-**/.artifacts/data/
-**/.docker/data/
+**/.artifacts/data
+**/.cache
+**/.docker/data
 
+*.csv
+*.csv.*
 
-## Caches
+*.db
+*.db.*
 
-**/.cache/
+*.db-*.*
+
+*.lock
+*.lock.*
+
+*-lock.*
+
+*.log
+*.log.*
+
+*.zip
+*.zip.*
+
+## Operating Systems
+
+### NixOS
+!flake.lock
+
+### Windows (WSL2)
+**/*:Zone.Identifier
 
 # Configuration Files
-**/*.config.*
 
-**/*.env
-**/*.env.*
-
-### Exceptions
+**/.config/*.config.*
 !**/default.config.*
-!**/*.config.cjs
-!**/*.config.js
-!**/*.config.mjs
-!**/config.py
-!**/config.rs
 
-!**/example.env.*
-!**/*.env.example
-!**/*.env.default
+*.env
+*.env.*
 
-# Dev
+!**/default.env
+!**/example.env
 
-### Idea
+## Development Environments
+**/.direnv/
 
+### JetBrains IDEs
 **/.idea/
 
-### vscode
+*.iml
+*.iml.*
 
-**/.vscode/
+### Visual Studio Code
+**/.vscode/*
 
-# File Extensions
+!**/.vscode/settings.json
 
-**/*.lock
-**/*.lock.*
-
-**/*-lock.*
-
-**/*.log
-**/*.log.*
-
-### Data Files
-
-**/*.csv
-**/*.csv.*
-
-**/*.db
-**/*.db.*
-
-**/*.db-*.*
-
-**/*.zip
-**/*.zip.*
-
-
+# Language Specific
 
 ## Rust
 **/debug/
 **/target/
 
-**/*.bk
-**/*.bk.*
+*.bk
+*.bk.*
 
-**/Cargo.lock
+!**/Cargo.lock
+
+## Python
+**/__pycache__/
+**/.pytest_cache/
+**/venv/
+
+*.egg
+*.egg.*
+
+*.egg-info
+
+*.pyc
+*.pyc.*
+
+*.pyo
+*.pyo.*
+
+*.pyz
+*.pyz.*
+
+*.pyzw
+*.pyzw.*
+
+*.whl
+*.whl.*
+
 
 ## Node
 **/build/
@@ -76,32 +99,20 @@
 **/dist/
 **/node_modules/
 
-### SvelteKit
+### Frameworks
+
+#### Next.js
+**/.next/
+
+#### SvelteKit
 **/__sapper__/
 **/.DS_STORE/
 **/.svelte-kit/
 
-## Python
-**/__pycache__/
-**/.pytest_cache/
-**/venv/
+#### Supabase
+**/.supabase/
+**/supabase/tmp/
 
-**/*.egg
-**/*.egg.*
-
-**/*.egg-info
-
-**/*.pyc
-**/*.pyc.*
-
-**/*.pyo
-**/*.pyo.*
-
-**/*.pyz
-**/*.pyz.*
-
-**/*.pyzw
-**/*.pyzw.*
-
-**/*.whl
-**/*.whl.*
+#### Vercel
+**/.vercel/
+**/.vercel_build_output/
