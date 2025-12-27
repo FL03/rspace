@@ -16,20 +16,21 @@
 // compiler check
 #[cfg(not(any(feature = "std", feature = "alloc")))]
 compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
-// re-exports
+// external crates
 #[cfg(any(feature = "alloc", feature = "std"))]
 extern crate alloc;
-
+// re-exports
 pub use rspace_core::*;
-
 #[cfg(feature = "derive")]
 pub use rspace_derive::*;
 #[cfg(feature = "macros")]
 pub use rspace_macros::*;
 // prelude
-#[allow(unused_imports)]
+#[doc(hidden)]
 pub mod prelude {
     pub use rspace_core::prelude::*;
     #[cfg(feature = "derive")]
     pub use rspace_derive::*;
+    #[cfg(feature = "macros")]
+    pub use rspace_macros::*;
 }

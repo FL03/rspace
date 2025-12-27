@@ -23,15 +23,6 @@ extern crate alloc;
 pub(crate) mod macros {
     #[macro_use]
     pub mod seal;
-
-    #[macro_use]
-    #[cfg(feature = "macros")]
-    pub mod ext {
-        #[macro_use]
-        pub mod format;
-        #[macro_use]
-        pub mod wrapper;
-    }
 }
 
 pub mod error;
@@ -42,10 +33,9 @@ pub use self::{
     traits::prelude::*,
 };
 #[doc(inline)]
-pub use contained_traits as traits;
+pub use rspace_traits as traits;
 // prelude
 #[doc(hidden)]
 pub mod prelude {
-    #[cfg(feature = "macros")]
-    pub use crate::{fmt_wrapper, wrapper};
+    pub use rspace_traits::prelude::*;
 }

@@ -1,8 +1,8 @@
 /*
-    Appellation: contained-derive <library>
+    Appellation: rspace-derive <library>
     Contrib: FL03 <jo3mccain@icloud.com>
 */
-//! derive macros for facilitating the creation of wrapper types
+//! derive macros for facilitating the creation of containers, fields, and spaces.
 
 extern crate proc_macro;
 extern crate quote;
@@ -26,10 +26,10 @@ pub(crate) mod impls {
 use proc_macro::TokenStream;
 use syn::{DeriveInput, parse_macro_input};
 
-/// The [`Wrapper`] macro is designed for single-field structs, implementing additional methods
+/// The [`Spatial`] macro is designed for single-field structs, implementing additional methods
 /// supporting interactions with the inner value
-#[proc_macro_derive(Wrapper, attributes(wrap))]
-pub fn wrapper(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(Spatial, attributes(wrap))]
+pub fn spatial(input: TokenStream) -> TokenStream {
     // Parse the inputs into the proper struct
     let ast = parse_macro_input!(input as DeriveInput);
 

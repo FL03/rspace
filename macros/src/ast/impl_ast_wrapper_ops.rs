@@ -47,10 +47,10 @@ impl Parse for WrapperOpsAst {
         }
         Ok(Self {
             _impl,
-            generics,
+            _generics: generics,
             target,
             field,
-            where_clause,
+            _where: where_clause,
             ops,
         })
     }
