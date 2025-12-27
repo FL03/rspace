@@ -1,11 +1,17 @@
 # Security Policy
 
+The security policy for the `rspace` sdk
+
 ## Supported Versions
 
 Checkout the current and supported packages below
 
-| Package | Current | Supported |
-|---------|---------|-----------|
-| rspace  | 0.0.0   | <=0.0.0   |
+| Version         | Supported           |
+|:----------------|:--------------------|
+| 0.0.2 (latest)  | :white_check_mark:  |
+| 0.0.0, <=0.0.1  | :white_check_mark:  |
 
 ## Reporting a Vulnerability
+
+* Open an [issue](https://github.com/FL03/rspace/issues) detailing the vulnerability.
+* Contact out [support team](mailto:support@pzzld.org) using a `RSpace Vulnerability Report:` as the subject line.
