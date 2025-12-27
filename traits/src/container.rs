@@ -3,15 +3,25 @@
     Created At: 2025.12.26:14:12:46
     Contrib: @FL03
 */
-use crate::store::RawStore;
+use crate::space::RawSpace;
 
 /// The [`Container`] trait is a higher-kinded trait used to establish an interface for
 /// defining containers themselves.
 pub trait Container<U>
 where
-    Self::Cont<U>: RawStore<Elem = U>,
+    Self::Cont<U>: RawSpace<Elem = U>,
 {
     type Cont<V>: ?Sized;
+}
+
+pub trait ContainerIter<U>: Container<U>
+where
+    Self::Cont<U>: RawSpace<Elem = U>,
+{
+    type Iter<'a, T>: Iterator<Item = &'a T>
+    where
+        Self: 'a,
+        T: 'a;
 }
 
 /*
@@ -21,7 +31,7 @@ where
 impl<C, T> Container<T> for &C
 where
     C: Container<T>,
-    C::Cont<T>: RawStore<Elem = T>,
+    C::Cont<T>: RawSpace<Elem = T>,
 {
     type Cont<U> = <C>::Cont<U>;
 }
@@ -29,7 +39,7 @@ where
 impl<C, T> Container<T> for &mut C
 where
     C: Container<T>,
-    C::Cont<T>: RawStore<Elem = T>,
+    C::Cont<T>: RawSpace<Elem = T>,
 {
     type Cont<U> = <C>::Cont<U>;
 }

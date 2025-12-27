@@ -11,43 +11,22 @@
 
 _**The library is currently in the early stages of development and is not yet ready for production use.**_
 
-rspace implements generic fields in support of so-called rulial space.
+rspace is a library dedicated to providing robust abstractions for creating and working with containers (or spaces) within Rust. It aims to offer a flexible solution for managing collections of items, with a focus on safety, efficiency, and ease of use.
 
 ## Features
 
-- [x] Feature 1
+- [x] `RawSpace` - The core abstraction for defining spaces.
+- [x] `Container<T>` - A higher-kinded trait for defining containers.
+- [x] `Store<T>` - A trait for defining key-value stores.
 
 ## Getting Started
-
-### Building from the source
-
-Start by cloning the repository
-
-```bash
-git clone https://github.com/FL03/rspace.git
-cd rspace
-```
-
-#### _Building the project_
-
-```bash
-cargo build --all-features -r -v --workspace
-```
-
-#### _Running tests_
-
-```bash
-cargo test --all-features -r -v --workspace
-```
-
-## Usage
 
 Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies.rspace]
 features = []
-version = "0.1.0"
+version = "0.0.1"
 ```
 
 ### Examples
@@ -58,9 +37,10 @@ version = "0.1.0"
     extern crate rspace;
 
     fn main() -> Result<(), Box<dyn std::error::Error>> {
-        tracing_subscriber::fmt::init();
-        tracing::info!("Welcome to {name}", name = rspace);
-
+        tracing_subscriber::fmt()
+            .with_max_level(tracing::Level::INFO)
+            .init();
+        tracing::info! { "Welcome to {name}", name = "rspace" }
 
         Ok(())
     }

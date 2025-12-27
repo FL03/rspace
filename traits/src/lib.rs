@@ -13,6 +13,7 @@
     clippy::upper_case_acronyms
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(feature = "nightly", feature(allocator_api))]
 // compiler check
 #[cfg(not(any(feature = "std", feature = "alloc")))]
 compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
@@ -28,7 +29,7 @@ extern crate alloc;
 // modules
 pub mod container;
 pub mod key_value;
-pub mod store;
+pub mod space;
 
 pub mod ops {
     //! This module provides various operations traits and implementations for musical concepts
@@ -40,12 +41,12 @@ pub mod ops {
 }
 // re-exports
 #[doc(inline)]
-pub use self::{container::*, ops::*, store::*};
+pub use self::{container::*, ops::*, space::*};
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use crate::container::*;
     pub use crate::key_value::*;
     pub use crate::ops::*;
-    pub use crate::store::*;
+    pub use crate::space::*;
 }
