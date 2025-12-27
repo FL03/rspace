@@ -14,7 +14,7 @@ jobs:
     permissions:
       actions: write
     steps:
-      - uses: actions/github-script@v6
+      - uses: actions/github-script@v8
         name: Cleanup caches for closed PR
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
