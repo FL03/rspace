@@ -4,10 +4,6 @@ concurrency:
   cancel-in-progress: false
   group: ${{ github.workflow }}-${{ github.ref }}
 
-env:
-  CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: full
-
 on:
   pull_request:
     branches: [main, master]
@@ -31,6 +27,17 @@ on:
         description: "Run benchmarks"
         required: true
         type: boolean
+      nightly:
+        default: false
+        description: "Run nightly tests"
+        required: true
+        type: boolean
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+  RUN_BENCHMARKS: ${{ github.event_name == 'push' || inputs.benchmark }}
+  RUN_NIGHTLY_TESTS: ${{ inputs.nightly }}
 
 jobs:
   build:
@@ -49,7 +56,8 @@ jobs:
       - name: Build the workspace
         run: cargo build --release --locked --workspace --features full --target ${{ matrix.target }}
   benchmark:
-    if: ${{ inputs.benchmark || github.event_name == 'push' }}
+    if: ${{ github.env.RUN_BENCHMARKS }}
+    needs: build
     runs-on: ubuntu-latest
     outputs:
       digest: ${{ steps.cargo-bench.outputs.digest }}
@@ -92,3 +100,28 @@ jobs:
       - name: Test (default)
         if: matrix.features == 'default'
         run: cargo test -r --locked --workspace --target ${{ matrix.target }}
+  test_nightly:
+    if: ${{ github.env.RUN_NIGHTLY_TESTS }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        features: [nightly, no_std]
+        target: [x86_64-unknown-linux-gnu]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          target: ${{ matrix.target }}
+          toolchain: nightly
+      - name: Test (${{ matrix.features }})
+        if: matrix.features != 'no_std' && matrix.features != 'all'
+        run: cargo test -r --locked --workspace  --target ${{ matrix.target }} --features ${{ matrix.features }}
+      - name: Test (no_std)
+        if: matrix.features == 'no_std'
+        env:
+          RUSTFLAGS: "-Zno_std"
+        run: cargo test -r --locked --workspace --no-default-features --target ${{ matrix.target }} 

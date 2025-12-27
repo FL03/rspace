@@ -28,8 +28,14 @@ pub(crate) mod macros {
 extern crate alloc;
 // modules
 pub mod container;
-pub mod key_value;
 pub mod space;
+pub mod store;
+
+mod impls {
+    // mod impl_container;
+    mod impl_space;
+    mod impl_store;
+}
 
 pub mod ops {
     //! This module provides various operations traits and implementations for musical concepts
@@ -41,12 +47,12 @@ pub mod ops {
 }
 // re-exports
 #[doc(inline)]
-pub use self::{container::*, ops::*, space::*};
+pub use self::{container::*, ops::*, space::*, store::*};
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use crate::container::*;
-    pub use crate::key_value::*;
     pub use crate::ops::*;
     pub use crate::space::*;
+    pub use crate::store::*;
 }

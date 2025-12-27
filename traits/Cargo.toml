@@ -16,7 +16,7 @@ version.workspace = true
 
 [package.metadata.docs.rs]
 all-features = false
-features = ["default"]
+features = ["full"]
 rustc-args = ["--cfg", "docsrs"]
 version = "v{{version}}"
 
@@ -40,8 +40,7 @@ hashbrown = { optional = true, workspace = true }
 num-complex = { optional = true, workspace = true }
 num-traits = { workspace = true }
 # serialization
-serde = { features = ["derive"], optional = true, workspace = true }
-serde_derive = { optional = true, workspace = true }
+serde = { optional = true, workspace = true }
 # webassembly
 wasm-bindgen = { optional = true, workspace = true }
 # macros and utilities
@@ -96,9 +95,7 @@ rand = [
 
 serde = [
   "dep:serde",
-  "dep:serde_derive",
   "hashbrown?/serde",
-  "serde?/derive",
   "num-complex/serde",
 ]
 

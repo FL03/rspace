@@ -39,7 +39,7 @@ harness = false
 [[example]]
 doc-scrape-examples = true
 name = "space"
-required-features = ["derive"]
+required-features = ["default"]
 
 [dependencies]
 rspace-core = { workspace = true }
@@ -47,20 +47,26 @@ rspace-derive = { optional = true, workspace = true }
 rspace-macros = { optional = true, workspace = true }
 
 [dev-dependencies]
-criterion = { features = ["plotters"], version = "0.8" }
+criterion = { features = ["plotters"], workspace = true }
+tracing = { features = ["default", "log"], workspace = true }
+tracing-subscriber = { features = ["fmt", "env-filter"], workspace = true }
 
 [features]
 default = ["std"]
 
 full = [
   "default",
+  "complex",
   "derive",
-  "macros",
   "hashbrown",
+  "serde",
 ]
 
 # ********* [FF] Features *********
-derive = ["dep:rspace-derive"]
+derive = [
+  "dep:rspace-derive",
+  "macros",
+]
 
 macros = [
   "dep:rspace-macros", 
