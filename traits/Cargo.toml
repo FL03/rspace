@@ -57,7 +57,9 @@ full = [
   "serde",
 ]
 
-nightly = []
+nightly = [
+  "hashbrown?/nightly",
+]
 
 # ************* [FF:Environments] *************
 std = [

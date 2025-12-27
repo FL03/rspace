@@ -72,6 +72,8 @@ json = [
 macros = []
 
 nightly = [
+  "hashbrown?/nightly",
+  "rand?/nightly",
   "rspace-traits/nightly",
 ]
 
@@ -104,6 +106,8 @@ wasm = [
 alloc = [
   "rspace-traits/alloc",
   "hashbrown?/alloc",
+  "rand?/alloc",
+  "rand_distr?/alloc",
   "serde?/alloc",
   "serde_json?/alloc",
 ]
@@ -131,15 +135,19 @@ rayon = [
 
 rng = [
   "dep:getrandom",
+  "rand?/small_rng",
 ]
 
 serde = [
   "dep:serde",
   "dep:serde_derive",
-  "rspace-traits/serde",
   "serde?/derive",
   "hashbrown?/serde",
   "num-complex?/serde",
+  "rand?/serde",
+  "rand_core?/serde",
+  "rand_distr?/serde",
+  "rspace-traits/serde",
 ]
 
 serde_json = ["dep:serde_json"]
