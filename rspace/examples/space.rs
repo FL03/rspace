@@ -18,7 +18,7 @@ fn main() -> rspace::Result<()> {
 
     let container = Something([1, 2, 3, 4, 5]);
     tracing::info! { ?container }
-    
+
     Ok(())
 }
 

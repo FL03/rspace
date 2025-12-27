@@ -10,6 +10,8 @@ pub type Result<T> = core::result::Result<T, Error>;
 /// The custom error type for the crate.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("The impossible has occurred...")]
+    Infalliable(core::convert::Infallible),
     #[cfg(feature = "alloc")]
     #[error(transparent)]
     BoxError(#[from] alloc::boxed::Box<dyn core::error::Error + Send + Sync + 'static>),
@@ -27,7 +29,7 @@ pub enum Error {
 mod impl_alloc {
     use super::Error;
     use alloc::boxed::Box;
-    use alloc::string::String;
+    use alloc::string::{String, ToString};
 
     impl Error {
         pub fn box_error<E>(error: E) -> Self
@@ -35,6 +37,10 @@ mod impl_alloc {
             E: core::error::Error + Send + Sync + 'static,
         {
             Self::BoxError(Box::new(error))
+        }
+
+        pub fn unknown<E: ToString>(error: E) -> Self {
+            Self::Unknown(error.to_string())
         }
     }
 
