@@ -31,7 +31,8 @@ rspace-traits = { default-features = false, path = "traits", version = "0.0.2" }
 
 rspace-derive = { default-features = false, path = "derive", version = "0.0.2" }
 rspace-macros = { default-features = false, path = "macros", version = "0.0.2" }
-
+# development & benchmarking
+criterion = { version = "0.8" }
 # concurrency & parallelism
 rayon = { default-features = false, version = "1" }
 rayon-core = { default-features = false, version = "1" }
@@ -40,6 +41,9 @@ hashbrown = { default-features = false, version = "0.16" }
 # error handling
 anyhow = { default-features = false, version = "1" }
 thiserror = { default-features = false, version = "2" }
+# logging 
+tracing = { default-features = false, features = ["attributes"], version = "0.1" }
+tracing-subscriber = { version = "0.3" }
 # math
 num-complex = { default-features = false, version = "0.4" }
 num-traits = { default-features = false, version = "0.2" }

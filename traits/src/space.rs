@@ -10,7 +10,7 @@
 /// are of **one** specific type.
 pub trait RawSpace {
     /// The type of elements associated with the container
-    type Elem;
+    type Elem: ?Sized;
 }
 
 /// [`RawSpaceMut`] is a trait that provides various mutable methods for accessing elements.

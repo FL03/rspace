@@ -23,3 +23,7 @@ pub trait Store<K, V>: RawStore<K, V> {
 /*
  ************* Implementations *************
 */
+
+impl<K, V, S> RawStore<K, V> for &S where S: RawStore<K, V> {}
+
+impl<K, V, S> RawStore<K, V> for &mut S where S: RawStore<K, V> {}

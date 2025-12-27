@@ -64,22 +64,6 @@ impl_container! {
     }
 }
 
-impl<C, T> Container<T> for &C
-where
-    C: Container<T>,
-    C::Cont<T>: RawSpace<Elem = T>,
-{
-    type Cont<U> = <C>::Cont<U>;
-}
-
-impl<C, T> Container<T> for &mut C
-where
-    C: Container<T>,
-    C::Cont<T>: RawSpace<Elem = T>,
-{
-    type Cont<U> = <C>::Cont<U>;
-}
-
 impl<T> Container<T> for [T] {
     type Cont<U> = [U];
 }
