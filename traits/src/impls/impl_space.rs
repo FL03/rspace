@@ -108,6 +108,11 @@ impl_raw_space! {
     }
 }
 
+#[cfg(feature = "complex")]
+impl<T> RawSpace for num_complex::Complex<T> {
+    type Elem = T;
+}
+
 impl<T> RawSpace for [T] {
     type Elem = T;
 }

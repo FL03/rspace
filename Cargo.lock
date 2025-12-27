@@ -568,7 +568,6 @@ dependencies = [
  "paste",
  "rayon-core",
  "serde",
- "serde_derive",
  "wasm-bindgen",
 ]
 
