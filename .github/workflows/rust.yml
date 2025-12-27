@@ -57,6 +57,7 @@ jobs:
         run: cargo build --release --locked --workspace --features full --target ${{ matrix.target }}
   benchmark:
     if: ${{ github.env.RUN_BENCHMARKS }}
+    needs: build
     runs-on: ubuntu-latest
     outputs:
       digest: ${{ steps.cargo-bench.outputs.digest }}
