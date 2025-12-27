@@ -1,30 +1,51 @@
 /*
-    Appellation: rspace-core <library>
-    Contrib: Joe McCain III <jo3mccain@icloud.com>
+    Appellation: core <library>
+    Contrib: FL03 <jo3mccain@icloud.com>
 */
-//! # Core Modules
-//! 
-//! ## Configuration Space $(C)$
-//!
-//! Configuration space $C$, or c-space, is the set of all possible configurations $q$ of a 
-//! system where $q \in Q$.
+//! this core components of the contained crate
+#![allow(
+    clippy::missing_safety_doc,
+    clippy::module_inception,
+    clippy::needless_doctest_main,
+    clippy::upper_case_acronyms
+)]
 #![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(not(any(feature = "std", feature = "alloc")))]
+compile_error! {
+    "Either the 'std' or 'alloc' feature must be enabled."
+}
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
 #[macro_use]
-pub(crate) mod macros;
-#[macro_use]
-pub(crate) mod seal;
+pub(crate) mod macros {
+    #[macro_use]
+    pub mod seal;
 
-pub mod elem;
-pub mod traits;
-pub mod types;
+    #[macro_use]
+    #[cfg(feature = "macros")]
+    pub mod ext {
+        #[macro_use]
+        pub mod format;
+        #[macro_use]
+        pub mod wrapper;
+    }
+}
 
-#[allow(unused_imports)]
+pub mod error;
+// re-exports
+#[doc(inline)]
+pub use self::{
+    error::{Error, Result},
+    traits::prelude::*,
+};
+#[doc(inline)]
+pub use contained_traits as traits;
+// prelude
+#[doc(hidden)]
 pub mod prelude {
-    pub use super::elem::prelude::*;
-    pub use crate::traits::prelude::*;
-    pub use crate::types::prelude::*;
+    #[cfg(feature = "macros")]
+    pub use crate::{fmt_wrapper, wrapper};
 }

@@ -1,65 +1,148 @@
 [package]
-authors.workspace = true
 build = "build.rs"
+description = "Core modules for the rspace framework"
+name = "rspace-core"
+
+authors.workspace = true
 categories.workspace = true
-description.workspace = true
 edition.workspace = true
 homepage.workspace = true
 keywords.workspace = true
 license.workspace = true
-name = "rspace-core"
 readme.workspace = true
 repository.workspace = true
+rust-version.workspace = true
 version.workspace = true
 
+[package.metadata.docs.rs]
+all-features = false
+features = ["full"]
+rustc-args = ["--cfg", "docsrs"]
+version = "v{{version}}"
+
+[package.metadata.release]
+no-dev-version = true
+tag-name = "{{version}}"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+bench = false
+doctest = true
+test = true
+
+[dependencies]
+rspace-traits = { workspace = true }
+# data structures
+hashbrown = { optional = true, workspace = true }
+# mathematics
+num-complex = { optional = true, workspace = true }
+num-traits = { workspace = true }
+# error handling
+thiserror = { workspace = true }
+# random
+getrandom = { optional = true, workspace = true }
+rand = { optional = true, workspace = true }
+rand_core = { optional = true, workspace = true }
+rand_distr = { optional = true, workspace = true }
+# serialization
+serde = { optional = true, features = ["derive"], workspace = true }
+serde_derive = { optional = true, workspace = true }
+serde_json = { optional = true, workspace = true }
+# WebAssembly
+wasm-bindgen = { optional = true, workspace = true }
+
 [features]
-default = [
-    "std",
-]
+default = ["std"]
 
 full = [
-    "default",
-    "serde",
+  "default",
+  "complex",
+  "hashbrown",
+  "json",
+  "serde",
 ]
 
-# ********* [FF] Dependencies *********
-alloc = [
-    "serde?/alloc",
+# ********* [FF] Features *********
+json = [
+  "alloc",
+  "serde_json",
 ]
 
-serde = [
-    "dep:serde"
+macros = []
+
+nightly = [
+  "rspace-traits/nightly",
 ]
 
 # ********* [FF] Environments *********
 std = [
-    "alloc",
-    "serde?/std",
+  "alloc",
+  "rspace-traits/std",
+  "hashbrown?/default",
+  "num-complex?/std",
+  "num-traits/std",
+  "rand?/std",
+  "rand_core?/std",
+  "rand_distr?/std",
+  "serde?/std",
+  "serde_json?/std",
+  "thiserror/std",
 ]
 
-[lib]
-bench = true
-crate-type = ["cdylib", "rlib"]
-doctest = false
-test = true
+wasi = [
+  "rspace-traits/wasi",
+]
 
-[build-dependencies]
+wasm = [
+  "wasm_bindgen",
+  "rspace-traits/wasm",
+  "getrandom?/wasm_js",
+]
 
-[dependencies]
+# ********* [FF] Dependencies *********
+alloc = [
+  "rspace-traits/alloc",
+  "hashbrown?/alloc",
+  "serde?/alloc",
+  "serde_json?/alloc",
+]
 
-[dependencies.serde]
-default-features = false
-features = ["derive"]
-optional = true
-version = "1"
+complex = ["dep:num-complex"]
 
-[dev-dependencies]
-lazy_static.workspace = true
+hashbrown = [
+  "dep:hashbrown",
+  "rspace-traits/hashbrown",
+]
 
-[package.metadata.docs.rs]
-all-features = true
-rustc-args = ["--cfg", "docsrs"]
+rand = [
+  "rng",
+  "dep:rand",
+  "dep:rand_core",
+  "dep:rand_distr",
+  "rspace-traits/rand",
+  "num-complex?/rand",
+]
 
-[target.wasm32-unknown-unknown.dependencies]
+rayon = [
+  "rspace-traits/rayon",
+  "hashbrown?/rayon",
+]
 
-[target.wasm32-wasi]
+rng = [
+  "dep:getrandom",
+]
+
+serde = [
+  "dep:serde",
+  "dep:serde_derive",
+  "rspace-traits/serde",
+  "hashbrown?/serde",
+  "num-complex?/serde",
+]
+
+serde_json = ["dep:serde_json"]
+
+wasm_bindgen = [
+  "dep:wasm-bindgen",
+  "rspace-traits/wasm_bindgen",
+]

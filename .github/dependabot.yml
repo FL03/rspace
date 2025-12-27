@@ -1,19 +1,19 @@
 version: 2
-
 updates:
-  - package-ecosystem: cargo
-    directory: /
+  - package-ecosystem: docker
+    directories: [/, /.docker]
     schedule:
-      interval: monthly
+        interval: monthly
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: monthly
+        interval: monthly
   - package-ecosystem: cargo
-    directory: /rspace
     schedule:
-      interval: weekly
-  - package-ecosystem: cargo
-    directory: /core
-    schedule:
-      interval: weekly
+        interval: monthly
+    directories: 
+      - /rspace
+      - /core
+      - /derive
+      - /macros
+      - /traits

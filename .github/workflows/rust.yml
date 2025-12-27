@@ -1,58 +1,94 @@
 name: rust
 
-concurrency:   
+concurrency:
   cancel-in-progress: false
   group: ${{ github.workflow }}-${{ github.ref }}
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main, master]
+    types: [opened, synchronize, reopened]
+    paths:
+      - "**.rs"
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
+      - ".github/workflows/rust.yml"
   push:
-    branches: [ main ]
+    branches: [main, master]
+    tags: [latest, v*.*.*, "*-nightly"]
   release:
-    types: [ created ]
+    types: [created, edited]
   repository_dispatch:
-    types: [ rust ]
-  schedule:
-    - cron: "30 21 * * 0" # Every Sunday at 9:30pm UTC
+    types: [rust]
   workflow_dispatch:
-
-permissions: write-all
+    inputs:
+      benchmark:
+        default: false
+        description: "Run benchmarks"
+        required: true
+        type: boolean
 
 jobs:
-  workspace:
-    name: Workspace
+  build:
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ macos-latest, ubuntu-latest, windows-latest ]
-        toolchain: [ stable, nightly ]
-    runs-on: ${{ matrix.platform }}
+        target: [x86_64-unknown-linux-gnu]
     steps:
-      - uses: actions/checkout@v4
-      - name: setup (rustup)
-        run: |
-          rustup default ${{ matrix.toolchain }}
-          rustup update
-      - name: build (workspace)
-        run: cargo build --all-features -r -v --workspace
-      - name: test (workspace)
-        run: cargo test --all-features -v --workspace
-      - name: bench (workspace)
-        if: matrix.toolchain == 'nightly'
-        run: cargo bench -F full -v --workspace
-      - name: cache
-        uses: actions/cache@v4
+      - uses: actions/checkout@v6
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          key: ${{ runner.os }}-cargo-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.lock') }}
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target/release
-          restore-keys: |
-            ${{ runner.os }}-cargo-${{ matrix.toolchain }}-${{ hashFiles('**/Cargo.lock') }}
-            ${{ runner.os }}-cargo-${{ matrix.toolchain }}-
-            ${{ runner.os }}-cargo-
-            ${{ runner.os }}-
+          cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          target: ${{ matrix.target }}
+      - name: Build the workspace
+        run: cargo build --release --locked --workspace --features full --target ${{ matrix.target }}
+  benchmark:
+    if: ${{ inputs.benchmark || github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.cargo-bench.outputs.digest }}
+      id: ${{ steps.cargo-bench.outputs.id }}
+      url: ${{ steps.cargo-bench.outputs.url }}
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+          repository: ${{ github.repository }}
+      - name: Benchmark the workspace
+        id: cargo-bench
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          event-type: cargo-bench
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          token: ${{ github.token }}
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        features: [full, default]
+        target: [x86_64-unknown-linux-gnu]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          target: ${{ matrix.target }}
+      - name: Test (${{ matrix.features }})
+        if: matrix.features != 'default' && matrix.features != 'all'
+        run: cargo test -r --locked --workspace --target ${{ matrix.target }} --features ${{ matrix.features }}
+      - name: Test (default)
+        if: matrix.features == 'default'
+        run: cargo test -r --locked --workspace --target ${{ matrix.target }}

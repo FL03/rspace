@@ -1,9 +1,9 @@
 /*
-    Appellation: default <test>
-    Contrib: FL03 <jo3mccain@icloud.com>
+    appellation: default <module>
+    authors: @FL03
 */
 
-fn add<A, B, C>(a: A, b: B) -> C
+fn adder<A, B, C>(a: A, b: B) -> C
 where
     A: core::ops::Add<B, Output = C>,
 {
@@ -12,6 +12,6 @@ where
 
 #[test]
 fn compiles() {
-    assert_eq!(add(10, 10), 20);
-    assert_ne!(add(1, 1), 3);
+    assert_eq!(adder(1, 100), 101);
+    assert_eq!(adder(1.0, 100.0), 101.0);
 }

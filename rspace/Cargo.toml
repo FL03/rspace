@@ -1,73 +1,126 @@
 [package]
-authors.workspace = true
 build = "build.rs"
+name = "rspace"
+
+authors.workspace = true
 categories.workspace = true
 description.workspace = true
 edition.workspace = true
 homepage.workspace = true
 keywords.workspace = true
 license.workspace = true
-name = "rspace"
 readme.workspace = true
 repository.workspace = true
+rust-version.workspace = true
 version.workspace = true
 
+[package.metadata.docs.rs]
+all-features = false
+doc-scrape-examples = true
+features = ["full"]
+rustc-args = ["--cfg", "docsrs"]
+version = "v{{version}}"
+
+[package.metadata.release]
+no-dev-version = true
+tag-name = "v{{version}}"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+path = "lib.rs"
+bench = true
+doctest = true
+test = true
+
+[[bench]]
+name = "default"
+harness = false
+
+[[example]]
+doc-scrape-examples = true
+name = "space"
+required-features = ["derive"]
+
+[dependencies]
+rspace-core = { workspace = true }
+rspace-derive = { optional = true, workspace = true }
+rspace-macros = { optional = true, workspace = true }
+
+[dev-dependencies]
+criterion = { features = ["plotters"], version = "0.8" }
+
 [features]
-default = [
-    "std",
-]
+default = ["std"]
 
 full = [
-    "default",
-    "serde",
+  "default",
+  "derive",
+  "macros",
+  "hashbrown",
 ]
 
-# ********* [FF] Dependencies *********
-alloc = [
-    "serde?/alloc",
-    "rspace-core/alloc",
+# ********* [FF] Features *********
+derive = ["dep:rspace-derive"]
+
+macros = [
+  "dep:rspace-macros", 
+  "rspace-core/macros",
 ]
 
-serde = [
-    "dep:serde",
-    "rspace-core/serde",
+nightly = [
+  "rspace-core/nightly",
+  "rspace-derive?/nightly",
+  "rspace-macros?/nightly",
+]
+
+json = [
+  "alloc",
+  "rspace-core/json",
 ]
 
 # ********* [FF] Environments *********
 std = [
-    "alloc",
-    "rspace-core/std",
-    "serde?/std",
+  "alloc",
+  "rspace-core/std",
 ]
 
-[lib]
-bench = true
-crate-type = ["cdylib", "rlib"]
-doctest = false
-test = true
+wasi = [
+  "alloc",
+  "rspace-core/wasi",
+]
 
-[build-dependencies]
+wasm = [
+  "alloc",
+  "rspace-core/wasm",
+]
 
-[dependencies]
+# ********* [FF] Dependencies *********
+alloc = [
+  "rspace-core/alloc",
+]
 
-[dependencies.rspace-core]
-default-features = false
-path = "../core"
-version = "0.0.1"
+complex = [
+  "rspace-core/complex",
+]
 
-[dependencies.serde]
-default-features = false
-features = ["derive"]
-optional = true
-version = "1"
+hashbrown = [
+  "rspace-core/hashbrown",
+]
 
-[dev-dependencies]
-lazy_static.workspace = true
+rand = [
+  "rspace-core/rand",
+  "rng",
+]
 
-[package.metadata.docs.rs]
-all-features = true
-rustc-args = ["--cfg", "docsrs"]
+rayon = [
+  "rspace-core/rayon",
+]
 
-[target.wasm32-unknown-unknown.dependencies]
+rng = [
+  "rspace-core/rng",
+]
 
-[target.wasm32-wasi]
+
+serde = [
+  "rspace-core/serde",
+]

@@ -1,53 +1,85 @@
 [workspace]
-default-members = [
-    "rspace"
-]
-
-exclude = [ ]
-
+default-members = ["rspace"]
 members = [
-    "rspace",
+  "rspace",
+  "core",
+  "derive",
+  "macros",
+  "traits",
 ]
-
-resolver = "2"
-
-[workspace.dependencies]
-anyhow = "1"
-lazy_static = "1"
-paste = "1"
-smart_default = "0.7"
-thiserror = "1"
+resolver = "3"
 
 [workspace.package]
-authors = ["Joe McCain III <jo3mccain@icloud.com>",]
-categories = [ ]
-description = "rspace implements generic fields in support of so-called rulial space."
-edition = "2021"
+authors = [
+  "FL03 <joe@pzzld.org> (https://github.com/FL03)",
+]
+categories = []
+description = "rspace focuses on establishing a robust foundation for exploring and utilitizing containers, spaces, fields, and other abstractions in Rust."
+edition = "2024"
 homepage = "https://github.com/FL03/rspace/wiki"
-keywords = [ ]
+keywords = ["macros", "transparent", "wrapper"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/FL03/rspace.git"
+rust-version = "1.85.0"
 version = "0.0.1"
 
+[workspace.dependencies]
+rspace = { default-features = false, path = "rspace", version = "0.0.1" }
+rspace-core = { default-features = false, path = "core", version = "0.0.1" }
+rspace-traits = { default-features = false, path = "traits", version = "0.0.1" }
+
+rspace-derive = { default-features = false, path = "derive", version = "0.0.1" }
+rspace-macros = { default-features = false, path = "macros", version = "0.0.1" }
+
+# concurrency & parallelism
+rayon = { default-features = false, version = "1" }
+rayon-core = { default-features = false, version = "1" }
+# data structures
+hashbrown = { default-features = false, version = "0.16" }
+# error handling
+anyhow = { default-features = false, version = "1" }
+thiserror = { default-features = false, version = "2.0.7" }
+# math
+num-complex = { default-features = false, version = "0.4" }
+num-traits = { default-features = false, version = "0.2" }
+# random
+getrandom = { default-features = false, version = "0.3" }
+rand = { default-features = false, version = "0.9" }
+rand_core = { default-features = false, version = "0.9" }
+rand_distr = { default-features = false, version = "0.5" }
+# serialization
+serde = { default-features = false, features = ["derive"], version = "1" }
+serde_derive = { default-features = false, version = "1" }
+serde_json = { default-features = false, version = "1" }
+# macros & utilities
+paste = { version = "1" }
+smart-default = { version = "0.7" }
+strum = { default-features = false, features = ["derive"], version = "0.27" }
+# WebAssembly
+wasm-bindgen = { default-features = false, version = "0.2" }
+
+# ********* Profiles *********
 [profile.dev]
-opt-level = 0
+codegen-units = 256
 debug = true
 debug-assertions = true
-overflow-checks = true
-lto = false
-panic = 'unwind'
 incremental = true
-codegen-units = 256
+lto = "thin"
+opt-level = 2
+overflow-checks = true
+panic = "abort"
 rpath = false
+strip = "symbols"
 
 [profile.release]
-opt-level = 3
+codegen-units = 16
 debug = false
 debug-assertions = false
-overflow-checks = false
-lto = false
-panic = 'unwind'
 incremental = false
-codegen-units = 16
+lto = "fat"
+opt-level = "z"
+overflow-checks = false
+panic = "abort"
 rpath = false
+strip = "debuginfo"
