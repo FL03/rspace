@@ -135,7 +135,9 @@ rayon = [
 
 rng = [
   "dep:getrandom",
+  "rand?/os_rng",
   "rand?/small_rng",
+  "rand_core?/os_rng",
 ]
 
 serde = [
