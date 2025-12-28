@@ -1,9 +1,13 @@
 /*
-    Appellation: container-traits <library>
-    Created At: 2025.12.26:16:43:42
+    Appellation: rspace-traits <library>
+    Created At: 2025.12.28:11:55:04
     Contrib: @FL03
 */
-//! Traits and interfaces for establishing a sound foundation for containers and their elements.
+//! Various traits used to establish a solid foundation for defining and manipulating
+//! containers, spaces, fields, and other related abstractions. The core trait, [`RawSpace`],
+//! is a fundamental building block for defining _spaces_ (i.e. containers containing elements
+//! of a specific type). The [`Container`] trait builds upon [`RawSpace`] to provide a more
+//! robust interface for containers and higher-kinded abstractions.
 #![allow(
     clippy::missing_errors_doc,
     clippy::missing_safety_doc,
@@ -28,8 +32,12 @@ pub(crate) mod macros {
 extern crate alloc;
 // modules
 pub mod container;
+pub mod get;
 pub mod space;
 pub mod store;
+
+#[doc(hidden)]
+pub mod hkt;
 
 mod impls {
     // mod impl_container;
@@ -47,11 +55,12 @@ pub mod ops {
 }
 // re-exports
 #[doc(inline)]
-pub use self::{container::*, ops::*, space::*, store::*};
+pub use self::{container::*, get::*, ops::*, space::*, store::*};
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use crate::container::*;
+    pub use crate::get::*;
     pub use crate::ops::*;
     pub use crate::space::*;
     pub use crate::store::*;

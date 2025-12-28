@@ -59,6 +59,8 @@ full = [
   "complex",
   "derive",
   "hashbrown",
+  "json",
+  "rand",
   "serde",
 ]
 
@@ -81,6 +83,8 @@ nightly = [
 
 json = [
   "alloc",
+  "serde",
+  "serde_json",
   "rspace-core/json",
 ]
 
@@ -126,7 +130,14 @@ rng = [
   "rspace-core/rng",
 ]
 
-
 serde = [
   "rspace-core/serde",
+]
+
+serde_json = [
+  "rspace-core/serde_json",
+]
+
+wasm_bindgen = [
+  "rspace-core/wasm_bindgen",
 ]
