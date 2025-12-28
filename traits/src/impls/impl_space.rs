@@ -6,33 +6,33 @@
 use crate::space::RawSpace;
 
 macro_rules! impl_raw_space  {
-    (impl<Elem = $elem:ident> $trait:ident for {$(
+    (impl<Elem = $E:ident> $trait:ident for {$(
         $($cont:ident)::*<$($lt:lifetime,)? $($T:ident),*> $({where $($rest:tt)*})?
     ),* $(,)?}) => {
         $(impl_raw_space! {
-            @impl<Elem = $elem> $trait for $($cont)::*<$($lt,)? $($T),*> $(where $($rest)*)?
+            @impl<Elem = $E> $trait for $($cont)::*<$($lt,)? $($T),*> $(where $($rest)*)?
         })*
     };
-    (@impl<Elem = $elem:ident> $trait:ident for $($cont:ident)::*<$($lt:lifetime,)? $($T:ident),*> $(where $($rest:tt)*)?) => {
+    (@impl<Elem = $E:ident> $trait:ident for $($cont:ident)::*<$($lt:lifetime,)? $($T:ident),*> $(where $($rest:tt)*)?) => {
         impl<$($lt,)? $($T),*> $trait for $($cont)::*<$($lt,)? $($T),*> $(where $($rest)*)? {
-            type Elem = $elem;
+            type Elem = $E;
         }
     };
 }
 
 macro_rules! impl_raw_tuple_store {
-    (@impl<$T:ident> $trait:ident for ($($name:ident),+ $(,)?)) => {
-        impl<$T> $trait for ($($name),+) {
-            type Elem = $T;
+    (@impl<Elem = $E:ident> $trait:ident for ($($name:ident),+ $(,)?)) => {
+        impl<$E> $trait for ($($name),+) {
+            type Elem = $E;
         }
     };
-    (impl<$T:ident> $trait:ident for {$(($($name:ident),+)),* $(,)?}) => {
-        $(impl_raw_tuple_store! { @impl<$T> $trait for ($($name),+) } )*
+    (impl<Elem = $E:ident> $trait:ident for {$(($($name:ident),+)),* $(,)?}) => {
+        $(impl_raw_tuple_store! { @impl<Elem = $E> $trait for ($($name),+) } )*
     };
 }
 
 impl_raw_tuple_store! {
-    impl<T> RawSpace for {
+    impl<Elem = T> RawSpace for {
         (T, T),
         (T, T, T),
         (T, T, T, T),
