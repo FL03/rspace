@@ -19,7 +19,7 @@
       in rec {
         packages.default = pkgs.rustPlatform.buildRustPackage {
           pname = "rspace";
-          version = "0.0.3";
+          version = "0.0.6";
           src = self; # ./.;
           cargoLock = {
             lockFile = ./Cargo.lock;

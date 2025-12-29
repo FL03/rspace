@@ -6,10 +6,11 @@ The security policy for the `rspace` sdk
 
 Checkout the current and supported packages below
 
-| Version         | Supported           |
-|:----------------|:--------------------|
-| 0.0.2 (latest)  | :white_check_mark:  |
-| 0.0.0, <=0.0.1  | :white_check_mark:  |
+| Version          | Supported           |
+|:-----------------|:--------------------|
+| 0.0.6 (latest)   | :white_check_mark:  |
+| >0.0.1,<=0.0.5   | :white_check_mark:  |
+| 0.0.0            | :x:                 |
 
 ## Reporting a Vulnerability
 
