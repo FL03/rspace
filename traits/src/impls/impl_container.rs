@@ -6,6 +6,22 @@
 use crate::Container;
 
 #[allow(unused_macros)]
+macro_rules! container {
+    (@impl $trait:ident<$T:ident> for $($cont:ident)::*<$($U:ident),+ $(,)?>) => {
+        paste::paste! {
+            impl<$($U),+> $trait<$T> for $($cont)::*<$($U),+> {
+                type Cont<[<_ $T>]> = $($cont)::*<[<_ $T>]>;
+            }
+
+        }
+    };
+    (impl $trait:ident<$T:ident> for {$($($cont:ident)::*<$($U:ident),+ $(,)?>),* $(,)?}) => {
+        $(container!{ @impl $trait<$T> for $($cont)::*<$($U),+>})*
+    };
+}
+
+
+#[allow(unused_macros)]
 macro_rules! impl_container  {
     (impl<Elem = $E:ident> $trait:ident for {$(
         $($cont:ident)::*<$($T:ident),*> $({where $($rest:tt)*})?
@@ -53,7 +69,7 @@ impl_tuple_container! {
 }
 
 impl_container! {
-    impl<Elem = T> Container for {
+    impl Container<T> for {
         core::option::Option<T>,
         core::cell::Cell<T>,
         core::cell::OnceCell<T>,
