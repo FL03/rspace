@@ -29,14 +29,17 @@ pub(crate) mod macros {
 }
 // modules
 pub mod error;
+pub mod point;
 // re-exports
 #[doc(inline)]
 pub use self::{
     error::{Error, Result},
+    point::*,
     traits::prelude::*,
 };
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use rspace_traits::prelude::*;
+    pub use crate::point::*;
 }

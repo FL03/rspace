@@ -16,8 +16,7 @@ version.workspace = true
 
 [package.metadata.docs.rs]
 all-features = false
-doc-scrape-examples = true
-features = ["default"]
+features = ["full"]
 rustc-args = ["--cfg", "docsrs"]
 version = "v{{version}}"
 
@@ -27,9 +26,10 @@ tag-name = "v{{version}}"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-path = "lib.rs"
 bench = true
+doc = true
 doctest = true
+path = "lib.rs"
 test = true
 
 [[bench]]
@@ -37,7 +37,6 @@ name = "default"
 harness = false
 
 [[example]]
-doc-scrape-examples = true
 name = "space"
 required-features = ["default"]
 
@@ -84,7 +83,6 @@ nightly = [
 json = [
   "alloc",
   "serde",
-  "serde_json",
   "rspace-core/json",
 ]
 
@@ -132,12 +130,4 @@ rng = [
 
 serde = [
   "rspace-core/serde",
-]
-
-serde_json = [
-  "rspace-core/serde_json",
-]
-
-wasm_bindgen = [
-  "rspace-core/wasm_bindgen",
 ]

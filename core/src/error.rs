@@ -11,7 +11,7 @@ pub type Result<T> = core::result::Result<T, Error>;
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("The impossible has occurred...")]
-    Infalliable(core::convert::Infallible),
+    Infallible(#[from] core::convert::Infallible),
     #[cfg(feature = "alloc")]
     #[error(transparent)]
     BoxError(#[from] alloc::boxed::Box<dyn core::error::Error + Send + Sync + 'static>),
