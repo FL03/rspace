@@ -8,13 +8,18 @@ on:
   pull_request:
     branches: [main, master]
     types: [opened, reopened, ready_for_review]
+    paths:
+      - ".github/workflows/cargo-clippy.yml"
+      - "**.rs"
+      - "Cargo.toml"
+      - "Cargo.lock"
   push:
     branches: [main, master]
     tags: [latest, v*.*.*, "*-nightly"]
   release:
     types: [created, edited]
   repository_dispatch:
-    types: [clippy, cargo-clippy]
+    types: [clippy]
   workflow_dispatch:
 
 jobs:
@@ -34,17 +39,15 @@ jobs:
           cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           components: clippy, rustfmt
           toolchain: nightly
-          override: true
       - name: Setup the for sarif output
         run: cargo install clippy-sarif sarif-fmt
       - name: Run Clippy
         run: cargo clippy
           --all-features
-          --workspace
           --message-format=json | clippy-sarif | tee rust-clippy-results.sarif | sarif-fmt
+        continue-on-error: true
       - name: Upload analysis
         uses: github/codeql-action/upload-sarif@v4
-        continue-on-error: true
         with:
           sarif_file: rust-clippy-results.sarif
           wait-for-processing: true
