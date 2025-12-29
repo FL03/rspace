@@ -6,6 +6,15 @@
 mod impl_point;
 mod impl_point_ext;
 mod impl_point_repr;
+/// An instance of the [`Point`] implementation containing owned references to the inner values.
+pub type PointView<'a, X, Y = X> = Point<&'a X, &'a Y>;
+/// An instance of the [`Point`] implementation containing mutable references to the inner
+/// values.
+pub type PointViewMut<'a, X, Y = X> = Point<&'a mut X, &'a mut Y>;
+/// A [`Point`] whose elements are raw pointers to `X` and `Y`
+pub type RawPoint<X, Y = X> = Point<*const X, *const Y>;
+/// A mutable [`Point`] whose elements are raw pointers to `X` and `Y`
+pub type RawPointMut<X, Y = X> = Point<*mut X, *mut Y>;
 
 /// The [`Point`] implementation is designed a generic, 2-dimensional point object used to
 /// define coordinates, vectors, or positions in a 2D space.
