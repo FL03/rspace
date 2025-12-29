@@ -4,8 +4,8 @@
     Contrib: @FL03
 */
 use crate::container::{Container, ContainerMap};
-use crate::space::RawSpace;
 use crate::ops::Apply;
+use crate::space::RawSpace;
 
 impl<S, T> Container<T> for S
 where

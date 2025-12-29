@@ -7,10 +7,7 @@ use super::Point;
 
 impl<X, Y> From<(X, Y)> for Point<X, Y> {
     fn from((x, y): (X, Y)) -> Self {
-        Point {
-            x,
-            y,
-        }
+        Point { x, y }
     }
 }
 
@@ -32,7 +29,6 @@ impl<X> From<Point<X, X>> for [X; 2] {
     }
 }
 
-
 impl<X, Y> PartialEq<(X, Y)> for Point<X, Y>
 where
     X: PartialEq,
@@ -53,5 +49,3 @@ where
         x == &point.x && y == &point.y
     }
 }
-
-

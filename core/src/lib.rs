@@ -40,6 +40,6 @@ pub use self::{
 // prelude
 #[doc(hidden)]
 pub mod prelude {
-    pub use rspace_traits::prelude::*;
     pub use crate::point::*;
+    pub use rspace_traits::prelude::*;
 }
