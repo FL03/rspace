@@ -59,6 +59,7 @@ full = [
   "complex",
   "hashbrown",
   "json",
+  "rand",
   "serde",
 ]
 
