@@ -3,13 +3,13 @@
     Contrib: @FL03
 */
 
-/// The [`Functor`] trait describes an interface for a higher-kinded type that can be mapped 
-/// over. The trait is parameterized over a function `F` and a target type `T`, allowing for 
+/// The [`Functor`] trait describes an interface for a higher-kinded type that can be mapped
+/// over. The trait is parameterized over a function `F` and a target type `T`, allowing for
 /// granular control over the mapping process itself, relying on associated types like
-/// `Cont<U>` to define the resulting container type after the mapping operation and the 
+/// `Cont<U>` to define the resulting container type after the mapping operation and the
 /// `Elem` type to specify the type of elements contained within the functor _**before**_
-/// the mapping operation is applied. Moreover, the `apply` method takes ownership of the 
-/// functor allowing for distinct implementations for referenced, mutabled, and owned 
+/// the mapping operation is applied. Moreover, the `apply` method takes ownership of the
+/// functor allowing for distinct implementations for referenced, mutabled, and owned
 /// instances.
 pub trait Functor<F, T>
 where
@@ -19,6 +19,17 @@ where
     type Elem;
 
     fn apply(self, f: F) -> Self::Cont<T>;
+}
+
+pub trait FunctorIter<F, T>
+where
+    F: FnOnce(Self::Elem) -> T,
+{
+    type Cont<U>: ?Sized;
+    type Iter;
+    type Elem;
+
+    fn apply_all(self, f: F) -> Self::Cont<T>;
 }
 
 // pub trait Applicative<T>: Functor<T> {
@@ -34,42 +45,44 @@ where
 /*
  *************  Implementations  *************
 */
-impl<F, X, Y> Functor<F, Y> for Option<X>
+impl<U, V, F> Functor<F, V> for Option<U>
 where
-    F: FnOnce(X) -> Y,
+    F: FnOnce(U) -> V,
 {
-    type Cont<U> = Option<U>;
-    type Elem = X;
+    type Cont<T> = Option<T>;
+    type Elem = U;
 
-    fn apply(self, f: F) -> Self::Cont<Y> {
+    fn apply(self, f: F) -> Self::Cont<V> {
         self.map(f)
     }
 }
 
-impl<'a, F, X, Y> Functor<F, Y> for &'a Option<X>
+impl<'a, U, V, F> Functor<F, V> for &'a Option<U>
 where
-    for<'b> F: FnMut(&'b X) -> Y,
+    F: FnOnce(&U) -> V,
 {
-    type Cont<U> = Option<U>;
-    type Elem = &'a X;
+    type Cont<T> = Option<T>;
+    type Elem = &'a U;
 
-    fn apply(self, f: F) -> Self::Cont<Y> {
-        self.as_ref().map(f)
+    fn apply(self, f: F) -> Self::Cont<V> {
+        self.as_ref().map(|x| f(x))
     }
 }
 
-impl<F, X, Y> Functor<F, Y> for Vec<X>
+impl<F, X, Y, S, I> FunctorIter<F, Y> for S
 where
+    S: IntoIterator<Item = X, IntoIter = I>,
     F: FnMut(X) -> Y,
+    I: Iterator<Item = X>,
 {
-    type Cont<U> = core::iter::Map<std::vec::IntoIter<X>, F>;
+    type Cont<U> = core::iter::Map<<S as IntoIterator>::IntoIter, F>;
+    type Iter = I;
     type Elem = X;
 
-    fn apply(self, f: F) -> Self::Cont<Y> {
+    fn apply_all(self, f: F) -> Self::Cont<Y> {
         self.into_iter().map(f)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -81,7 +94,7 @@ mod tests {
             input as f32 + 1.25
         }
         assert_eq! {
-            Some(42u8).apply(sample), 
+            Some(42u8).apply(sample),
             Some(43.25)
         }
     }

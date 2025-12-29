@@ -18,7 +18,7 @@ pub trait RawSpaceMut: RawSpace {}
 
 /// [`RawSpaceRef`] is a trait that provides various read-only methods for accessing elements.
 pub trait RawSpaceRef: RawSpace {}
-/// [`SliceSpace`] is used to define sequential collections, spaces, or containers that can be 
+/// [`SliceSpace`] is used to define sequential collections, spaces, or containers that can be
 /// viewed as slices.
 pub trait SliceSpace: RawSpace {
     fn as_slice(&self) -> &[Self::Elem];

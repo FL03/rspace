@@ -45,7 +45,6 @@ where
 
 impl<Q, T> Get<Q> for [T]
 where
-
     Q: core::slice::SliceIndex<[T]>,
 {
     type Key = usize;
