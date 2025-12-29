@@ -26,10 +26,7 @@ fn main() -> rspace::Result<()> {
 #[repr(transparent)]
 pub struct Something<T: ?Sized>(pub T);
 
-impl<T> RawSpace for Something<T>
-where
-    T: ?Sized,
-{
+impl<T> RawSpace for Something<T> {
     type Elem = T;
 }
 

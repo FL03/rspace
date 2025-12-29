@@ -42,7 +42,6 @@ thiserror = { workspace = true }
 # random
 getrandom = { optional = true, workspace = true }
 rand = { optional = true, workspace = true }
-rand_core = { optional = true, workspace = true }
 rand_distr = { optional = true, workspace = true }
 # serialization
 serde = { optional = true, workspace = true }
@@ -86,7 +85,6 @@ std = [
   "num-complex?/std",
   "num-traits/std",
   "rand?/std",
-  "rand_core?/std",
   "rand_distr?/std",
   "serde?/std",
   "serde_json?/std",
@@ -123,7 +121,6 @@ hashbrown = [
 rand = [
   "rng",
   "dep:rand",
-  "dep:rand_core",
   "dep:rand_distr",
   "rspace-traits/rand",
   "num-complex?/rand",
@@ -138,7 +135,6 @@ rng = [
   "dep:getrandom",
   "rand?/os_rng",
   "rand?/small_rng",
-  "rand_core?/os_rng",
 ]
 
 serde = [
@@ -148,7 +144,6 @@ serde = [
   "hashbrown?/serde",
   "num-complex?/serde",
   "rand?/serde",
-  "rand_core?/serde",
   "rand_distr?/serde",
   "rspace-traits/serde",
 ]

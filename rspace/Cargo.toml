@@ -16,7 +16,7 @@ version.workspace = true
 
 [package.metadata.docs.rs]
 all-features = false
-features = ["full"]
+features = ["default"]
 rustc-args = ["--cfg", "docsrs"]
 version = "v{{version}}"
 
@@ -83,7 +83,7 @@ nightly = [
 json = [
   "alloc",
   "serde",
-  "rspace-core/json",
+  "serde_json",
 ]
 
 # ********* [FF] Environments *********
@@ -99,6 +99,7 @@ wasi = [
 
 wasm = [
   "alloc",
+  "wasm_bindgen",
   "rspace-core/wasm",
 ]
 
@@ -130,4 +131,12 @@ rng = [
 
 serde = [
   "rspace-core/serde",
+]
+
+serde_json = [
+  "rspace-core/serde_json",
+]
+
+wasm_bindgen = [
+  "rspace-core/wasm_bindgen",
 ]

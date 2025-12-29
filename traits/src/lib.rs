@@ -1,8 +1,4 @@
-/*
-    Appellation: rspace-traits <library>
-    Created At: 2025.12.28:11:55:04
-    Contrib: @FL03
-*/
+#![crate_name = "rspace_traits"]
 //! Various traits used to establish a solid foundation for defining and manipulating
 //! containers, spaces, fields, and other related abstractions. The core trait, [`RawSpace`],
 //! is a fundamental building block for defining _spaces_ (i.e. containers containing elements
@@ -32,15 +28,12 @@ pub(crate) mod macros {
 extern crate alloc;
 // modules
 pub mod container;
-pub mod get;
+pub mod functor;
 pub mod space;
 pub mod store;
 
-#[doc(hidden)]
-pub mod hkt;
-
 mod impls {
-    // mod impl_container;
+    mod impl_container;
     mod impl_space;
     mod impl_store;
 }
@@ -48,19 +41,19 @@ mod impls {
 pub mod ops {
     //! This module provides various operations traits and implementations for musical concepts
     #[doc(inline)]
-    pub use self::{apply::*, transform::*};
+    pub use self::{apply::*, get::*};
 
     mod apply;
-    mod transform;
+    mod get;
 }
 // re-exports
 #[doc(inline)]
-pub use self::{container::*, get::*, ops::*, space::*, store::*};
+pub use self::{container::*, functor::*, ops::*, space::*, store::*};
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use crate::container::*;
-    pub use crate::get::*;
+    pub use crate::functor::*;
     pub use crate::ops::*;
     pub use crate::space::*;
     pub use crate::store::*;
