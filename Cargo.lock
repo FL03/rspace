@@ -713,7 +713,7 @@ checksum = "7a2d987857b319362043e95f5353c0535c1f58eec5336fdfcf626430af7def58"
 
 [[package]]
 name = "rspace"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "criterion",
  "rspace-core",
@@ -725,7 +725,7 @@ dependencies = [
 
 [[package]]
 name = "rspace-core"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "getrandom",
  "hashbrown 0.16.1",
@@ -743,7 +743,7 @@ dependencies = [
 
 [[package]]
 name = "rspace-derive"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -752,7 +752,7 @@ dependencies = [
 
 [[package]]
 name = "rspace-macros"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -761,7 +761,7 @@ dependencies = [
 
 [[package]]
 name = "rspace-traits"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "hashbrown 0.16.1",
  "num-complex",
