@@ -24,6 +24,8 @@ where
         Self::Cont<X>: Sized;
 }
 
+/// The [`ContainerIter`] trait extends the [`Container`] trait to provide an interface
+/// for obtaining iterators over the elements of the container.
 pub trait ContainerIter<U>: Container<U>
 where
     Self::Cont<U>: RawSpace<Elem = U>,
@@ -32,28 +34,7 @@ where
     where
         Self: 'a,
         T: 'a;
+
+    fn iter(&self) -> Self::Iter<'_, U>;
 }
 
-/*
- ************* Implementations *************
-*/
-impl<S, T> ContainerMap<T> for S
-where
-    S: Container<T, Cont<T> = S>,
-    S::Cont<T>: RawSpace<Elem = T>,
-{
-    fn map<F, X>(&self, f: F) -> Self::Cont<X>
-    where
-        Self::Cont<T>: Apply<F, Output = Self::Cont<X>>,
-        Self::Cont<X>: Sized,
-    {
-        <Self::Cont<T> as Apply<F>>::apply(self, f)
-    }
-}
-
-impl<S, T> Container<T> for S
-where
-    S: RawSpace<Elem = T>,
-{
-    type Cont<V> = S;
-}
