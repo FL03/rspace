@@ -3,7 +3,7 @@
     Created At: 2025.12.29:14:39:20
     Contrib: @FL03
 */
-use crate::{Apply, RawSpace};
+use crate::RawSpace;
 
 /// The [`Container`] trait is a higher-kinded trait used to establish an interface for
 /// defining containers themselves.
