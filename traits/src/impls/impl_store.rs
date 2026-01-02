@@ -12,7 +12,7 @@ mod impl_alloc {
 
     impl<'a, K, V, A> StoreEntry<'a> for btree_map::Entry<'a, K, V, A>
     where
-        A: Allocator,
+        A: Allocator + Clone,
     {
         type Key = K;
         type Value = V;
@@ -20,7 +20,7 @@ mod impl_alloc {
 
     impl<K, V, A> Store<K, V> for BTreeMap<K, V, A>
     where
-        A: Allocator,
+        A: Allocator + Clone,
     {
         type Entry<'a>
             = btree_map::Entry<'a, K, V, A>
