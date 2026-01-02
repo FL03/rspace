@@ -1,9 +1,9 @@
 #![crate_name = "rspace"]
 #![crate_type = "lib"]
-//! `rspace` is a fundmanetal crate looking to support containers via a set of well established 
-//! interfaces, traits, primitives, and other useful tools. The crate is working towards 
-//! becoming `no_std` compatible, seeking to support embedded and other resource constrained 
-//! environments. Additionally, the crate is extensively feature-gated to ensure it remains as 
+//! `rspace` is a fundmanetal crate looking to support containers via a set of well established
+//! interfaces, traits, primitives, and other useful tools. The crate is working towards
+//! becoming `no_std` compatible, seeking to support embedded and other resource constrained
+//! environments. Additionally, the crate is extensively feature-gated to ensure it remains as
 //! lightweight and modular as possible.
 #![allow(
     clippy::missing_errors_doc,

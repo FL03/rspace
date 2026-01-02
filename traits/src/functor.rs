@@ -21,17 +21,6 @@ where
     fn apply(self, f: F) -> Self::Cont<T>;
 }
 
-pub trait FunctorIter<F, T>
-where
-    F: FnOnce(Self::Elem) -> T,
-{
-    type Cont<U>: ?Sized;
-    type Iter;
-    type Elem;
-
-    fn apply_all(self, f: F) -> Self::Cont<T>;
-}
-
 // pub trait Applicative<T>: Functor<T> {
 //     fn pure(value: T) -> Self::Cont<T>;
 // }
@@ -66,21 +55,6 @@ where
 
     fn apply(self, f: F) -> Self::Cont<V> {
         self.as_ref().map(|x| f(x))
-    }
-}
-
-impl<F, X, Y, S, I> FunctorIter<F, Y> for S
-where
-    S: IntoIterator<Item = X, IntoIter = I>,
-    F: FnMut(X) -> Y,
-    I: Iterator<Item = X>,
-{
-    type Cont<U> = core::iter::Map<<S as IntoIterator>::IntoIter, F>;
-    type Iter = I;
-    type Elem = X;
-
-    fn apply_all(self, f: F) -> Self::Cont<Y> {
-        self.into_iter().map(f)
     }
 }
 
