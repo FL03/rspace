@@ -106,12 +106,12 @@ impl_raw_space! {
 impl_raw_space! {
     impl<Elem = T> RawSpace for {
         alloc::collections::BTreeSet<T, A> { where A: Clone + alloc::alloc::Allocator },
-        alloc::collections::LinkedList<T, A> { where A: Clone + alloc::alloc::Allocator },
-        alloc::collections::VecDeque<T, A> { where A: Clone + alloc::alloc::Allocator },
-        alloc::collections::BinaryHeap<T, A> { where A: Clone + alloc::alloc::Allocator },
+        alloc::collections::LinkedList<T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::VecDeque<T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::BinaryHeap<T, A> { where A: alloc::alloc::Allocator },
         alloc::collections::BTreeMap<K, T, A> { where A: Clone + alloc::alloc::Allocator },
         alloc::collections::btree_map::Entry<'a, K, T, A> { where A: Clone + alloc::alloc::Allocator },
-        alloc::vec::Vec<T, A> { where A: Clone + alloc::alloc::Allocator },
+        alloc::vec::Vec<T, A> { where A: alloc::alloc::Allocator },
     }
 }
 
@@ -248,7 +248,7 @@ mod impl_alloc {
 
     impl<T, A> RawSpaceRef for Vec<T, A>
     where
-        A: Allocator + Clone,
+        A: Allocator,
     {
         fn as_ptr(&self) -> *const Self::Elem {
             Vec::as_ptr(self)
@@ -257,7 +257,7 @@ mod impl_alloc {
 
     impl<T, A> RawSpaceMut for Vec<T, A>
     where
-        A: Allocator + Clone,
+        A: Allocator,
     {
         fn as_ptr_mut(&mut self) -> *mut Self::Elem {
             Vec::as_mut_ptr(self)
@@ -266,7 +266,7 @@ mod impl_alloc {
 
     impl<T, A> SliceSpace for Vec<T, A>
     where
-        A: Allocator + Clone,
+        A: Allocator,
     {
         fn as_slice(&self) -> &[Self::Elem] {
             self.as_slice()
@@ -275,7 +275,7 @@ mod impl_alloc {
 
     impl<T, A> SliceSpaceMut for Vec<T, A>
     where
-        A: Allocator + Clone,
+        A: Allocator,
     {
         fn as_mut_slice(&mut self) -> &mut [Self::Elem] {
             self.as_mut_slice()

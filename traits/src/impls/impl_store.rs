@@ -28,7 +28,7 @@ mod impl_alloc {
             Self: 'a;
     }
 
-    impl<T, A> RawStore<usize, T> for Vec<T, A> where A: Allocator + Clone {}
+    impl<T, A> RawStore<usize, T> for Vec<T, A> where A: Allocator {}
 }
 
 #[cfg(all(feature = "alloc", not(feature = "nightly")))]
