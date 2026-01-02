@@ -25,7 +25,8 @@ pub trait RawSpaceRef: RawSpace {
 /// [`RawSpaceMut`] is a trait that provides various mutable methods for accessing elements.
 pub trait RawSpaceMut: RawSpace {
     /// returns a mutable pointer to the element currently within scope
-    fn as_ptr_mut(&mut self) -> *mut Self::Elem;}
+    fn as_ptr_mut(&mut self) -> *mut Self::Elem;
+}
 
 /// [`SliceSpace`] is used to define sequential collections, spaces, or containers that can be
 /// viewed as slices.
@@ -84,5 +85,3 @@ where
         U::as_ptr(*self)
     }
 }
-
-
