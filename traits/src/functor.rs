@@ -69,7 +69,7 @@ mod tests {
         }
         assert_eq! {
             Some(42u8).apply(sample),
-            Some(43.25)
+            Some(43.25f32)
         }
     }
 }
