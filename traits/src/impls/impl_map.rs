@@ -25,7 +25,7 @@ where
     type Elem = &'a X;
 
     fn map_into(self, f: F) -> Self::Cont<Y> {
-        self.as_ref().map(|x| f(x))
+        self.as_ref().map(f)
     }
 }
 
