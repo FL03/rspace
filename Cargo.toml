@@ -3,8 +3,6 @@ default-members = ["rspace"]
 members = [
   "rspace",
   "core",
-  "derive",
-  "macros",
   "traits",
 ]
 resolver = "3"
@@ -28,14 +26,8 @@ version = "0.0.7"
 rspace = { default-features = false, path = "rspace", version = "0.0.7" }
 rspace-core = { default-features = false, path = "core", version = "0.0.7" }
 rspace-traits = { default-features = false, path = "traits", version = "0.0.7" }
-
-rspace-derive = { default-features = false, path = "derive", version = "0.0.7" }
-rspace-macros = { default-features = false, path = "macros", version = "0.0.7" }
 # development & benchmarking
 criterion = { version = "0.8" }
-# concurrency & parallelism
-rayon = { default-features = false, version = "1" }
-rayon-core = { default-features = false, version = "1" }
 # data structures
 hashbrown = { default-features = false, version = "0.16" }
 # error handling
@@ -50,7 +42,6 @@ num-traits = { default-features = false, version = "0.2" }
 # random
 getrandom = { default-features = false, version = "0.3" }
 rand = { default-features = false, version = "0.9" }
-rand_core = { default-features = false, version = "0.9" }
 rand_distr = { default-features = false, version = "0.5" }
 # serialization
 serde = { default-features = false, features = ["derive"], version = "1" }
@@ -72,7 +63,7 @@ opt-level = 2
 overflow-checks = true
 panic = "abort"
 rpath = false
-strip = "symbols"
+strip = false
 
 [profile.release]
 codegen-units = 16

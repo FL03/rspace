@@ -25,7 +25,6 @@ no-dev-version = true
 tag-name = "v{{version}}"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
 bench = true
 doc = true
 doctest = true
@@ -33,8 +32,8 @@ path = "lib.rs"
 test = true
 
 [[bench]]
-name = "default"
 harness = false
+name = "default"
 
 [[example]]
 name = "space"
@@ -42,8 +41,7 @@ required-features = ["default"]
 
 [dependencies]
 rspace-core = { workspace = true }
-rspace-derive = { optional = true, workspace = true }
-rspace-macros = { optional = true, workspace = true }
+rspace-traits = { workspace = true }
 
 [dev-dependencies]
 criterion = { features = ["plotters"], workspace = true }
@@ -56,7 +54,6 @@ default = ["std"]
 full = [
   "default",
   "complex",
-  "derive",
   "hashbrown",
   "json",
   "rand",
@@ -64,20 +61,12 @@ full = [
 ]
 
 # ********* [FF] Features *********
-derive = [
-  "dep:rspace-derive",
-  "macros",
-]
-
 macros = [
-  "dep:rspace-macros", 
   "rspace-core/macros",
 ]
 
 nightly = [
   "rspace-core/nightly",
-  "rspace-derive?/nightly",
-  "rspace-macros?/nightly",
 ]
 
 json = [
@@ -90,39 +79,45 @@ json = [
 std = [
   "alloc",
   "rspace-core/std",
+  "rspace-traits/std",
 ]
 
 wasi = [
-  "alloc",
   "rspace-core/wasi",
+  "rspace-traits/wasi",
 ]
 
 wasm = [
-  "alloc",
   "wasm_bindgen",
   "rspace-core/wasm",
+  "rspace-traits/wasm",
 ]
 
 # ********* [FF] Dependencies *********
 alloc = [
   "rspace-core/alloc",
+  "rspace-traits/alloc",
 ]
 
 complex = [
   "rspace-core/complex",
+  "rspace-traits/complex",
 ]
 
 hashbrown = [
   "rspace-core/hashbrown",
+  "rspace-traits/hashbrown",
 ]
 
 rand = [
   "rspace-core/rand",
+  "rspace-traits/rand",
   "rng",
 ]
 
 rayon = [
   "rspace-core/rayon",
+  "rspace-traits/rayon",
 ]
 
 rng = [
@@ -131,6 +126,7 @@ rng = [
 
 serde = [
   "rspace-core/serde",
+  "rspace-traits/serde",
 ]
 
 serde_json = [
@@ -139,4 +135,5 @@ serde_json = [
 
 wasm_bindgen = [
   "rspace-core/wasm_bindgen",
+  "rspace-traits/wasm_bindgen",
 ]

@@ -1,7 +1,5 @@
-/*
-    Appellation: rspace <library>
-    Contrib: FL03 <jo3mccain@icloud.com>
-*/
+#![crate_name = "rspace"]
+#![crate_type = "lib"]
 //! `rspace` works to establish a solid foundation for handling and defining containers, space,
 //! and fields within Rust.
 #![allow(
@@ -19,18 +17,17 @@ compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
 // external crates
 #[cfg(any(feature = "alloc", feature = "std"))]
 extern crate alloc;
+// declare external crates as modules
+#[doc(inline)]
+pub use rspace_traits as traits;
 // re-exports
+#[doc(inline)]
 pub use rspace_core::*;
-#[cfg(feature = "derive")]
-pub use rspace_derive::*;
-#[cfg(feature = "macros")]
-pub use rspace_macros::*;
+#[doc(inline)]
+pub use rspace_traits::*;
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use rspace_core::prelude::*;
-    #[cfg(feature = "derive")]
-    pub use rspace_derive::*;
-    #[cfg(feature = "macros")]
-    pub use rspace_macros::*;
+    pub use rspace_traits::prelude::*;
 }

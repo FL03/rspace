@@ -14,9 +14,9 @@
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "nightly", feature(allocator_api))]
-// compiler check
-#[cfg(not(any(feature = "std", feature = "alloc")))]
-compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
+// // compiler check
+// #[cfg(not(any(feature = "std", feature = "alloc")))]
+// compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
 // macros
 #[macro_use]
 pub(crate) mod macros {
