@@ -52,7 +52,7 @@ where
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
     use crate::ops::Apply;
-    use alloc::allocator::Allocator;
+    use alloc::alloc::Allocator;
     use alloc::boxed::Box;
     use alloc::vec::Vec;
 

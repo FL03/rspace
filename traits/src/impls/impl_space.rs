@@ -105,13 +105,13 @@ impl_raw_space! {
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 impl_raw_space! {
     impl<Elem = T> RawSpace for {
-        alloc::collections::BTreeSet<T, A> { where A: alloc::allocator::Allocator },
-        alloc::collections::LinkedList<T, A> { where A: alloc::allocator::Allocator },
-        alloc::collections::VecDeque<T, A> { where A: alloc::allocator::Allocator },
-        alloc::collections::BinaryHeap<T, A> { where A: alloc::allocator::Allocator },
-        alloc::collections::BTreeMap<K, T, A> { where A: alloc::allocator::Allocator },
-        alloc::collections::btree_map::Entry<'a, K, T, A> { where A: alloc::allocator::Allocator },
-        alloc::vec::Vec<T, A> { where A: alloc::allocator::Allocator },
+        alloc::collections::BTreeSet<T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::LinkedList<T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::VecDeque<T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::BinaryHeap<T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::BTreeMap<K, T, A> { where A: alloc::alloc::Allocator },
+        alloc::collections::btree_map::Entry<'a, K, T, A> { where A: alloc::alloc::Allocator },
+        alloc::vec::Vec<T, A> { where A: alloc::alloc::Allocator },
     }
 }
 
@@ -243,7 +243,7 @@ impl<T> SliceSpaceMut for &mut [T] {
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
     use crate::space::*;
-    use alloc::allocator::Allocator;
+    use alloc::alloc::Allocator;
     use alloc::vec::Vec;
 
     impl<T, A> RawSpaceRef for Vec<T, A>

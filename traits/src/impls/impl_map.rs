@@ -44,7 +44,7 @@ where
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
     use crate::ops::map::{MapInto, MapTo};
-    use alloc::allocator::Allocator;
+    use alloc::alloc::Allocator;
     use alloc::vec::Vec;
 
     impl<X, A, F, Y> MapInto<F, Y> for Vec<X, A>

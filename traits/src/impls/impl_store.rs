@@ -6,7 +6,7 @@
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
     use crate::store::*;
-    use alloc::allocator::Allocator;
+    use alloc::alloc::Allocator;
     use alloc::collections::btree_map::{self, BTreeMap};
     use alloc::vec::Vec;
 
