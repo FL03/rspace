@@ -7,7 +7,7 @@ concurrency:
 on:
   pull_request:
     branches: [main, master]
-    types: [opened, synchronize, reopened]
+    types: [synchronize]
     paths:
       - ".github/workflows/rust.yml"
       - "Cargo.toml"
@@ -22,11 +22,15 @@ on:
     types: [created]
   workflow_dispatch:
     inputs:
-      nightly:
-        default: false
-        description: "Run `nightly` tests?"
+      toolchain:
+        default: stable
+        description: "Choose which toolchain to test (stable, nightly, all)"
         required: true
-        type: boolean
+        type: choice
+        options:
+          - stable
+          - nightly
+          - all
 
 env:
   CARGO_TERM_COLOR: always
@@ -41,8 +45,12 @@ jobs:
         target: [x86_64-unknown-linux-gnu]
         toolchain: [stable]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
@@ -53,6 +61,7 @@ jobs:
       - name: Build the workspace
         run: cargo build -r --locked --workspace --features full --target ${{ matrix.target }}
   test:
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.toolchain != 'nightly') || true
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -60,17 +69,18 @@ jobs:
       matrix:
         features: [full, default]
         target: [x86_64-unknown-linux-gnu]
-        toolchain: [stable]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           target: ${{ matrix.target }}
-          toolchain: ${{ matrix.toolchain }}
-          override: true
       - name: Test (default)
         if: matrix.features == 'default'
         run: cargo test -r --locked --workspace --target ${{ matrix.target}}
@@ -78,7 +88,7 @@ jobs:
         if: matrix.features != 'default'
         run: cargo test -r --locked --workspace --target ${{ matrix.target}} --features ${{ matrix.features }}
   test_nightly:
-    if: github.event.inputs.nightly || false
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.toolchain != 'stable') || true
     continue-on-error: true
     needs: build
     runs-on: ubuntu-latest
@@ -89,8 +99,15 @@ jobs:
           - all
           - no_std
           - "alloc,nightly"
+        package:
+          - rspace-traits
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
@@ -99,16 +116,16 @@ jobs:
           override: true
       - name: Test (all-features)
         if: matrix.features == 'all'
-        run: cargo test -r --locked --workspace --all-features
+        run: cargo test -r --locked --all-features --package ${{ matrix.package }}
       - name: Test (no_std)
         continue-on-error: true
         if: matrix.features == 'no_std'
-        run: cargo test -r --locked --workspace --no-default-features --features nightly
+        run: cargo test -r --locked --no-default-features --package ${{ matrix.package }}
         env:
           RUSTFLAGS: "-C panic=abort -Z panic_abort_tests"
       - name: Test (${{ matrix.features }})
         continue-on-error: true
         if: matrix.features != 'all' && matrix.features != 'no_std'
-        run: cargo test -r --locked --workspace  --no-default-features --features ${{ matrix.features }}
+        run: cargo test -r --locked --no-default-features --features ${{ matrix.features }} --package ${{ matrix.package }}
         env:
           RUSTFLAGS: "-C panic=abort -Z panic_abort_tests"

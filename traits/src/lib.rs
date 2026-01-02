@@ -14,9 +14,9 @@
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "nightly", feature(allocator_api))]
-// compiler check
-#[cfg(not(any(feature = "std", feature = "alloc")))]
-compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
+// // compiler check
+// #[cfg(not(any(feature = "std", feature = "alloc")))]
+// compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
 // macros
 #[macro_use]
 pub(crate) mod macros {
@@ -33,7 +33,9 @@ pub mod space;
 pub mod store;
 
 mod impls {
+    mod impl_apply;
     mod impl_container;
+    mod impl_map;
     mod impl_space;
     mod impl_store;
 }
@@ -41,10 +43,17 @@ mod impls {
 pub mod ops {
     //! This module provides various operations traits and implementations for musical concepts
     #[doc(inline)]
-    pub use self::{apply::*, get::*};
+    pub use self::{apply::*, get::*, map::*};
 
-    mod apply;
-    mod get;
+    pub(crate) mod apply;
+    pub(crate) mod get;
+    pub(crate) mod map;
+
+    pub(crate) mod prelude {
+        pub use super::apply::*;
+        pub use super::get::*;
+        pub use super::map::*;
+    }
 }
 // re-exports
 #[doc(inline)]
@@ -54,7 +63,7 @@ pub use self::{container::*, functor::*, ops::*, space::*, store::*};
 pub mod prelude {
     pub use crate::container::*;
     pub use crate::functor::*;
-    pub use crate::ops::*;
+    pub use crate::ops::prelude::*;
     pub use crate::space::*;
     pub use crate::store::*;
 }

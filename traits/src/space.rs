@@ -12,37 +12,52 @@ pub trait RawSpace {
     /// The type of elements associated with the space
     type Elem;
 }
-
-/// [`RawSpaceMut`] is a trait that provides various mutable methods for accessing elements.
-pub trait RawSpaceMut: RawSpace {}
-
+/// [`ScalarSpace`] defins a type of space that consists of a single element. This trait is
+/// useful in that it generally allows for a tensor-like treatment of scalar values within
+/// more complex mathematical structures.
+pub trait ScalarSpace: RawSpace<Elem = Self> {
+    private! {}
+}
 /// [`RawSpaceRef`] is a trait that provides various read-only methods for accessing elements.
-pub trait RawSpaceRef: RawSpace {}
+pub trait RawSpaceRef: RawSpace {
+    fn as_ptr(&self) -> *const Self::Elem;
+}
+/// [`RawSpaceMut`] is a trait that provides various mutable methods for accessing elements.
+pub trait RawSpaceMut: RawSpace {
+    /// returns a mutable pointer to the element currently within scope
+    fn as_ptr_mut(&mut self) -> *mut Self::Elem;
+}
+
 /// [`SliceSpace`] is used to define sequential collections, spaces, or containers that can be
 /// viewed as slices.
-pub trait SliceSpace: RawSpace {
+pub trait SliceSpace: RawSpaceRef {
     fn as_slice(&self) -> &[Self::Elem];
-    /// returns a raw pointer to the underlying elements
-    fn as_ptr(&self) -> *const Self::Elem {
-        self.as_slice().as_ptr()
-    }
 
     fn len(&self) -> usize {
         self.as_slice().len()
     }
-}
 
-pub trait SliceSpaceMut: SliceSpace {
-    fn as_mut_slice(&mut self) -> &mut [Self::Elem];
-
-    fn as_mut_ptr(&mut self) -> *mut Self::Elem {
-        self.as_mut_slice().as_mut_ptr()
+    fn is_empty(&self) -> bool {
+        self.len() == 0
     }
+}
+/// [`SliceSpaceMut`] is used to define sequential collections, spaces, or containers that can be
+pub trait SliceSpaceMut: SliceSpace + RawSpaceMut {
+    /// returns a mutable slice of the elements
+    fn as_mut_slice(&mut self) -> &mut [Self::Elem];
 }
 
 /*
  ************* Implementations *************
 */
+
+impl<T> ScalarSpace for T
+where
+    T: RawSpace<Elem = Self>,
+{
+    seal! {}
+}
+
 impl<C, T> RawSpace for &C
 where
     C: RawSpace<Elem = T>,
@@ -55,4 +70,22 @@ where
     C: RawSpace<Elem = T>,
 {
     type Elem = C::Elem;
+}
+
+impl<U, T> RawSpaceRef for &U
+where
+    U: RawSpaceRef<Elem = T>,
+{
+    fn as_ptr(&self) -> *const Self::Elem {
+        U::as_ptr(*self)
+    }
+}
+
+impl<U, T> RawSpaceRef for &mut U
+where
+    U: RawSpaceRef<Elem = T>,
+{
+    fn as_ptr(&self) -> *const Self::Elem {
+        U::as_ptr(*self)
+    }
 }

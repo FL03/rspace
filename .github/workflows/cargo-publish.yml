@@ -30,8 +30,6 @@ jobs:
         package:
           - rspace-traits
           - rspace-core
-          - rspace-derive
-          - rspace-macros
           - rspace
     steps:
       - name: Checkout

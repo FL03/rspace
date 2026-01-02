@@ -19,8 +19,6 @@ compile_error! {
 // external crates
 #[cfg(feature = "alloc")]
 extern crate alloc;
-#[doc(inline)]
-pub use rspace_traits as traits;
 // macros
 #[macro_use]
 pub(crate) mod macros {
@@ -35,11 +33,9 @@ pub mod point;
 pub use self::{
     error::{Error, Result},
     point::*,
-    traits::prelude::*,
 };
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use crate::point::*;
-    pub use rspace_traits::prelude::*;
 }
