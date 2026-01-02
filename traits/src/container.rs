@@ -14,14 +14,13 @@ where
     type Cont<V>: ?Sized;
 }
 
-pub trait ContainerMap<T>: Container<T>
+pub trait ContainerIndex<T, Idx>: Container<T>
 where
-    Self::Cont<T>: RawSpace<Elem = T>,
+    Self::Cont<T>: RawSpace<Elem = T> + core::ops::Index<Idx, Output = T>,
 {
-    fn map<F, X>(&self, f: F) -> Self::Cont<X>
-    where
-        Self::Cont<T>: Apply<F, Output = Self::Cont<X>>,
-        Self::Cont<X>: Sized;
+    type Output;
+
+    fn get(&self, index: Idx) -> Option<&Self::Output>;
 }
 
 /// The [`ContainerIter`] trait extends the [`Container`] trait to provide an interface

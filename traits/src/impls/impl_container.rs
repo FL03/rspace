@@ -3,8 +3,7 @@
     Created At: 2025.12.26:19:32:27
     Contrib: @FL03
 */
-use crate::container::{Container, ContainerMap};
-use crate::ops::Apply;
+use crate::container::Container;
 use crate::space::RawSpace;
 
 impl<S, T> Container<T> for S
@@ -12,20 +11,6 @@ where
     S: RawSpace<Elem = T>,
 {
     type Cont<V> = S;
-}
-
-impl<S, T> ContainerMap<T> for S
-where
-    S: Container<T, Cont<T> = S>,
-    S::Cont<T>: RawSpace<Elem = T>,
-{
-    fn map<F, X>(&self, f: F) -> Self::Cont<X>
-    where
-        Self::Cont<T>: Apply<F, Output = Self::Cont<X>>,
-        Self::Cont<X>: Sized,
-    {
-        <Self::Cont<T> as Apply<F>>::apply(self, f)
-    }
 }
 
 impl<T> Container<T> for [T] {

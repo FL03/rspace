@@ -3,7 +3,7 @@
     Created At: 2026.01.01:21:39:28
     Contrib: @FL03
 */
-use crate::ops::apply::*;
+use crate::ops::apply::{Apply, ApplyMut, ApplyOnce};
 
 impl<U, V, F> ApplyOnce<F> for Option<U>
 where

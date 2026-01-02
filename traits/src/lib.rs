@@ -35,6 +35,7 @@ pub mod store;
 mod impls {
     mod impl_apply;
     mod impl_container;
+    mod impl_map;
     mod impl_space;
     mod impl_store;
 }
