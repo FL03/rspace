@@ -3,7 +3,7 @@
     Created At: 2025.12.26:19:20:09
     Contrib: @FL03
 */
-use crate::RawSpace;
+use crate::{RawSpace, RawSpaceMut, RawSpaceRef, SliceSpace, SliceSpaceMut};
 
 macro_rules! impl_scalar_space  {
     (impl $trait:ident for {$($T:ty),* $(,)?}) => {
@@ -154,4 +154,161 @@ impl<T> RawSpace for &mut [T] {
 
 impl<const N: usize, T> RawSpace for [T; N] {
     type Elem = T;
+}
+
+impl<const N: usize, T> RawSpaceRef for [T; N] {
+    fn as_ptr(&self) -> *const Self::Elem {
+        <[T]>::as_ptr(self)
+    }
+}
+
+impl<const N: usize, T> RawSpaceMut for [T; N] {
+    fn as_ptr_mut(&mut self) -> *mut Self::Elem {
+        <[T]>::as_mut_ptr(self)
+    }
+}
+
+impl<const N: usize, T> SliceSpace for [T; N] {
+    fn as_slice(&self) -> &[Self::Elem] {
+        self
+    }
+}
+
+impl<const N: usize, T> SliceSpaceMut for [T; N] {
+    fn as_mut_slice(&mut self) -> &mut [Self::Elem] {
+        self
+    }
+}
+
+impl<T> RawSpaceRef for [T] {
+    fn as_ptr(&self) -> *const Self::Elem {
+        <[T]>::as_ptr(self)
+    }
+}
+
+impl<T> RawSpaceMut for [T] {
+    fn as_ptr_mut(&mut self) -> *mut Self::Elem {
+        <[T]>::as_mut_ptr(self)
+    }
+}
+
+impl<T> SliceSpace for [T] {
+    fn as_slice(&self) -> &[Self::Elem] {
+        self
+    }
+}
+
+impl<T> SliceSpaceMut for [T] {
+    fn as_mut_slice(&mut self) -> &mut [Self::Elem] {
+        self
+    }
+}
+
+impl<T> RawSpaceRef for &[T] {
+    fn as_ptr(&self) -> *const Self::Elem {
+        <[T]>::as_ptr(self)
+    }
+}
+
+impl<T> SliceSpace for &[T] {
+    fn as_slice(&self) -> &[Self::Elem] {
+        self
+    }
+}
+
+impl<T> RawSpaceRef for &mut [T] {
+    fn as_ptr(&self) -> *const Self::Elem {
+        <[T]>::as_ptr(self)
+    }
+}
+
+impl<T> RawSpaceMut for &mut [T] {
+    fn as_ptr_mut(&mut self) -> *mut Self::Elem {
+        <[T]>::as_mut_ptr(self)
+    }
+}
+
+impl<T> SliceSpace for &mut [T] {
+    fn as_slice(&self) -> &[Self::Elem] {
+        self
+    }
+}
+
+impl<T> SliceSpaceMut for &mut [T] {
+    fn as_mut_slice(&mut self) -> &mut [Self::Elem] {
+        self
+    }
+}
+
+#[cfg(all(feature = "alloc", feature = "nightly"))]
+mod impl_alloc {
+    use crate::space::*;
+    use alloc::allocator::Allocator;
+    use alloc::vec::Vec;
+
+    impl<T, A> RawSpaceRef for Vec<T, A>
+    where
+        A: Allocator,
+    {
+        fn as_ptr(&self) -> *const Self::Elem {
+            Vec::as_ptr(self)
+        }
+    }
+
+    impl<T, A> RawSpaceMut for Vec<T, A>
+    where
+        A: Allocator,
+    {
+        fn as_ptr_mut(&mut self) -> *mut Self::Elem {
+            Vec::as_mut_ptr(self)
+        }
+    }
+
+    impl<T, A> SliceSpace for Vec<T, A>
+    where
+        A: Allocator,
+    {
+        fn as_slice(&self) -> &[Self::Elem] {
+            self.as_slice()
+        }
+    }
+
+    impl<T, A> SliceSpaceMut for Vec<T, A>
+    where
+        A: Allocator,
+    {
+        fn as_mut_slice(&mut self) -> &mut [Self::Elem] {
+            self.as_mut_slice()
+        }
+    }
+}
+
+#[cfg(all(feature = "alloc", not(feature = "nightly")))]
+mod impl_alloc {
+    use crate::space::*;
+    use alloc::vec::Vec;
+
+    impl<T> RawSpaceRef for Vec<T> {
+        fn as_ptr(&self) -> *const Self::Elem {
+            Vec::as_ptr(self)
+        }
+    }
+
+    impl<T> RawSpaceMut for Vec<T> {
+        fn as_ptr_mut(&mut self) -> *mut Self::Elem {
+            Vec::as_mut_ptr(self)
+        }
+    }
+
+    impl<T> SliceSpace for Vec<T> {
+        fn as_slice(&self) -> &[Self::Elem] {
+            self.as_slice()
+        }
+    }
+
+    impl<T> SliceSpaceMut for Vec<T> {
+        fn as_mut_slice(&mut self) -> &mut [Self::Elem] {
+            self.as_mut_slice()
+        }
+    }
 }

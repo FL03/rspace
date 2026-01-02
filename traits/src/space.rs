@@ -12,15 +12,20 @@ pub trait RawSpace {
     /// The type of elements associated with the space
     type Elem;
 }
-/// [`ScalarSpace`] enables the [`RawSpace`] trait for types that are their own elements.
-pub trait ScalarSpace: RawSpace<Elem = Self> {}
-
+/// [`ScalarSpace`] defins a type of space that consists of a single element. This trait is
+/// useful in that it generally allows for a tensor-like treatment of scalar values within
+/// more complex mathematical structures.
+pub trait ScalarSpace: RawSpace<Elem = Self> {
+    private! {}
+}
 /// [`RawSpaceRef`] is a trait that provides various read-only methods for accessing elements.
 pub trait RawSpaceRef: RawSpace {
     fn as_ptr(&self) -> *const Self::Elem;
 }
 /// [`RawSpaceMut`] is a trait that provides various mutable methods for accessing elements.
-pub trait RawSpaceMut: RawSpace {}
+pub trait RawSpaceMut: RawSpace {
+    /// returns a mutable pointer to the element currently within scope
+    fn as_ptr_mut(&mut self) -> *mut Self::Elem;}
 
 /// [`SliceSpace`] is used to define sequential collections, spaces, or containers that can be
 /// viewed as slices.
@@ -33,8 +38,6 @@ pub trait SliceSpace: RawSpaceRef {
 }
 /// [`SliceSpaceMut`] is used to define sequential collections, spaces, or containers that can be
 pub trait SliceSpaceMut: SliceSpace + RawSpaceMut {
-    /// returns a mutable pointer to the element currently within scope
-    fn as_ptr_mut(&mut self) -> *mut Self::Elem;
     /// returns a mutable slice of the elements
     fn as_mut_slice(&mut self) -> &mut [Self::Elem];
 }
@@ -42,6 +45,14 @@ pub trait SliceSpaceMut: SliceSpace + RawSpaceMut {
 /*
  ************* Implementations *************
 */
+
+impl<T> ScalarSpace for T
+where
+    T: RawSpace<Elem = Self>,
+{
+    seal! {}
+}
+
 impl<C, T> RawSpace for &C
 where
     C: RawSpace<Elem = T>,
@@ -73,3 +84,5 @@ where
         U::as_ptr(*self)
     }
 }
+
+
