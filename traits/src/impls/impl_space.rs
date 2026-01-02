@@ -110,7 +110,7 @@ impl_raw_space! {
         alloc::collections::VecDeque<T, A> { where A: alloc::allocator::Allocator },
         alloc::collections::BinaryHeap<T, A> { where A: alloc::allocator::Allocator },
         alloc::collections::BTreeMap<K, T, A> { where A: alloc::allocator::Allocator },
-        alloc::collections::btree_map::Entry<'a, K, T, a> { where A: alloc::allocator::Allocator },
+        alloc::collections::btree_map::Entry<'a, K, T, A> { where A: alloc::allocator::Allocator },
         alloc::vec::Vec<T, A> { where A: alloc::allocator::Allocator },
     }
 }
