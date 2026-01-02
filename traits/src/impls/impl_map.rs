@@ -51,6 +51,7 @@ mod impl_alloc {
     where
         A: Allocator,
         F: FnMut(X) -> Y,
+        Vec<Y, A>: FromIterator<Y>,
     {
         type Cont<U> = Vec<U, A>;
         type Elem = X;
@@ -64,6 +65,7 @@ mod impl_alloc {
     where
         A: Allocator,
         F: FnMut(&X) -> Y,
+        Vec<Y, A>: FromIterator<Y>,
     {
         type Cont<U> = Vec<U, A>;
         type Elem = X;
@@ -82,6 +84,7 @@ mod impl_alloc {
     impl<F, X, Y> MapInto<F, Y> for Vec<X>
     where
         F: FnMut(X) -> Y,
+        Vec<Y>: FromIterator<Y>,
     {
         type Cont<U> = Vec<U>;
         type Elem = X;
@@ -94,6 +97,7 @@ mod impl_alloc {
     impl<F, X, Y> MapTo<F, Y> for Vec<X>
     where
         F: FnMut(&X) -> Y,
+        Vec<Y>: FromIterator<Y>,
     {
         type Cont<U> = Vec<U>;
         type Elem = X;
