@@ -54,7 +54,7 @@ where
     type Elem = &'a U;
 
     fn apply(self, f: F) -> Self::Cont<V> {
-        self.as_ref().map(|x| f(x))
+        self.as_ref().map(f)
     }
 }
 
