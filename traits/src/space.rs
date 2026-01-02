@@ -36,6 +36,10 @@ pub trait SliceSpace: RawSpaceRef {
     fn len(&self) -> usize {
         self.as_slice().len()
     }
+
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 /// [`SliceSpaceMut`] is used to define sequential collections, spaces, or containers that can be
 pub trait SliceSpaceMut: SliceSpace + RawSpaceMut {
