@@ -5,7 +5,7 @@
 */
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
-    use crate::store::*;
+    use crate::store::{RawStore, Store, StoreEntry};
     use alloc::alloc::Allocator;
     use alloc::collections::btree_map::{self, BTreeMap};
     use alloc::vec::Vec;
@@ -17,6 +17,8 @@ mod impl_alloc {
         type Key = K;
         type Value = V;
     }
+
+    impl<K, V, A> RawStore<K, V> for BTreeMap<K, V, A> where A: Allocator + Clone {}
 
     impl<K, V, A> Store<K, V> for BTreeMap<K, V, A>
     where
@@ -33,8 +35,9 @@ mod impl_alloc {
 
 #[cfg(all(feature = "alloc", not(feature = "nightly")))]
 mod impl_alloc {
-    use crate::store::*;
+    use crate::store::{RawStore, Store, StoreEntry};
     use alloc::collections::btree_map::{self, BTreeMap};
+    use alloc::vec::Vec;
 
     impl<'a, K, V> StoreEntry<'a> for btree_map::Entry<'a, K, V> {
         type Key = K;
