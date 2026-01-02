@@ -72,6 +72,7 @@ mod impl_alloc {
     where
         A: Allocator,
         F: Fn(&U) -> V,
+        Vec<V, A>: FromIterator<V>,
     {
         type Output = Vec<V, A>;
 
@@ -100,6 +101,7 @@ mod impl_alloc {
     impl<U, V, F> Apply<F> for Vec<U>
     where
         F: Fn(&U) -> V,
+        Vec<V>: FromIterator<V>,
     {
         type Output = Vec<V>;
 
