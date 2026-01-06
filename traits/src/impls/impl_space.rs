@@ -124,7 +124,6 @@ impl_raw_space! {
         std::sync::LazyLock<T>,
         std::collections::HashMap<K, T>,
         std::collections::HashSet<T>,
-
     }
 }
 
