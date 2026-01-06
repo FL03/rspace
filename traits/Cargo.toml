@@ -99,6 +99,7 @@ rand = [
 
 serde = [
   "hashbrown?/serde",
+  "ndarray?/serde",
   "num-complex/serde",
 ]
 
