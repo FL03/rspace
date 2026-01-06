@@ -29,15 +29,15 @@ where
     }
 }
 
-impl<'a, U, V, F> MapTo<F, V> for &'a Option<U>
+impl<'a, U, V, F> MapTo<F, V> for Option<&'a U>
 where
-    F: FnOnce(&U) -> V,
+    for<'b> F: FnOnce(&'b U) -> V,
 {
     type Cont<T> = Option<T>;
     type Elem = &'a U;
 
     fn apply(&self, f: F) -> Self::Cont<V> {
-        self.as_ref().map(f)
+        self.map(f)
     }
 }
 
