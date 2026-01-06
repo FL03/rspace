@@ -51,6 +51,7 @@ impl_scalar_space! {
         bool, char
     }
 }
+
 #[cfg(feature = "alloc")]
 impl_scalar_space! {
     impl RawSpace for {
@@ -132,6 +133,13 @@ impl_raw_space! {
     impl<Elem = T> RawSpace for {
         hashbrown::HashMap<K, T, S>,
         hashbrown::HashSet<T, S>,
+    }
+}
+
+#[cfg(feature = "ndarray")]
+impl_raw_space! {
+    impl<Elem = T> RawSpace for {
+        ndarray::ArrayBase<S, D, T> { where S: ndarray::Data<Elem = T>, D: ndarray::Dimension },
     }
 }
 
