@@ -3,7 +3,7 @@
     Created At: 2026.01.01:21:59:39
     Contrib: @FL03
 */
-use crate::ops::map::{MapInto, MapTo};
+use crate::ops::{MapInto, MapTo};
 
 impl<U, V, F> MapInto<F, V> for Option<U>
 where
@@ -77,7 +77,7 @@ mod impl_alloc {
 
 #[cfg(all(feature = "alloc", not(feature = "nightly")))]
 mod impl_alloc {
-    use crate::ops::map::{MapInto, MapTo};
+    use crate::ops::{MapInto, MapTo};
     use alloc::vec::Vec;
 
     impl<F, X, Y> MapInto<F, Y> for Vec<X>

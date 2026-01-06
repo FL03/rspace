@@ -45,9 +45,9 @@ pub mod ops {
     #[doc(inline)]
     pub use self::{apply::*, get::*, map::*};
 
-    pub(crate) mod apply;
-    pub(crate) mod get;
-    pub(crate) mod map;
+    mod apply;
+    mod get;
+    mod map;
 
     pub(crate) mod prelude {
         pub use super::apply::*;
@@ -57,7 +57,7 @@ pub mod ops {
 }
 // re-exports
 #[doc(inline)]
-pub use self::{container::*, functor::*, ops::*, space::*, store::*};
+pub use self::{container::*, functor::*, ops::prelude::*, space::*, store::*};
 // prelude
 #[doc(hidden)]
 pub mod prelude {
