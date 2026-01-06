@@ -11,12 +11,12 @@
 /// and its _current_ element type.  
 pub trait MapTo<F, X>
 where
-    F: FnOnce(&Self::Elem) -> X,
+    F: FnOnce(Self::Elem) -> X,
 {
     type Cont<T>: ?Sized;
     type Elem;
 
-    fn map_to(&self, f: F) -> Self::Cont<X>;
+    fn apply(&self, f: F) -> Self::Cont<X>;
 }
 /// [`MapInto`] describes a consuming interface for containers that enables the mapping of a
 /// given function onto each element of the container. While the trait definition constrains
@@ -30,9 +30,21 @@ where
     /// the current type of element associated with the contained
     type Elem;
 
-    fn map_into(self, f: F) -> Self::Cont<X>;
+    fn apply(self, f: F) -> Self::Cont<X>;
 }
 
-/*
- ************* Implementations *************
-*/
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_option() {
+        fn sample(input: u8) -> f32 {
+            input as f32 + 1.25
+        }
+        assert_eq! {
+            Some(42u8).apply(sample),
+            Some(43.25f32)
+        }
+    }
+}

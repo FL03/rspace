@@ -5,14 +5,14 @@
 */
 use crate::ops::map::{MapInto, MapTo};
 
-impl<F, X, Y> MapInto<F, Y> for Option<X>
+impl<U, V, F> MapInto<F, V> for Option<U>
 where
-    F: FnOnce(X) -> Y,
+    F: FnOnce(U) -> V,
 {
-    type Cont<U> = Option<U>;
-    type Elem = X;
+    type Cont<T> = Option<T>;
+    type Elem = U;
 
-    fn map_into(self, f: F) -> Self::Cont<Y> {
+    fn apply(self, f: F) -> Self::Cont<V> {
         self.map(f)
     }
 }
@@ -24,19 +24,19 @@ where
     type Cont<U> = Option<U>;
     type Elem = &'a X;
 
-    fn map_into(self, f: F) -> Self::Cont<Y> {
+    fn apply(self, f: F) -> Self::Cont<Y> {
         self.as_ref().map(f)
     }
 }
 
-impl<F, X, Y> MapTo<F, Y> for Option<X>
+impl<'a, U, V, F> MapTo<F, V> for &'a Option<U>
 where
-    F: FnOnce(&X) -> Y,
+    F: FnOnce(&U) -> V,
 {
-    type Cont<U> = Option<U>;
-    type Elem = X;
+    type Cont<T> = Option<T>;
+    type Elem = &'a U;
 
-    fn map_to(&self, f: F) -> Self::Cont<Y> {
+    fn apply(&self, f: F) -> Self::Cont<V> {
         self.as_ref().map(f)
     }
 }
@@ -47,30 +47,29 @@ mod impl_alloc {
     use alloc::alloc::Allocator;
     use alloc::vec::Vec;
 
-    impl<X, A, F, Y> MapInto<F, Y> for Vec<X, A>
+    impl<U, V, A, F> MapInto<F, V> for Vec<U, A>
     where
         A: Allocator,
-        F: FnMut(X) -> Y,
-        Vec<Y, A>: FromIterator<Y>,
+        F: FnMut(U) -> V,
+        Vec<V, A>: FromIterator<V>,
     {
-        type Cont<U> = Vec<U, A>;
-        type Elem = X;
+        type Cont<_T> = Vec<_T, A>;
+        type Elem = U;
 
-        fn map_into(self, f: F) -> Self::Cont<Y> {
+        fn apply(self, f: F) -> Self::Cont<V> {
             self.into_iter().map(f).collect()
         }
     }
 
-    impl<X, A, F, Y> MapTo<F, Y> for Vec<X, A>
+    impl<'a, U, V, A, F> MapTo<F, V> for &'a Vec<U, A>
     where
         A: Allocator,
-        F: FnMut(&X) -> Y,
-        Vec<Y, A>: FromIterator<Y>,
+        F: FnMut(&U) -> V,
     {
-        type Cont<U> = Vec<U, A>;
-        type Elem = X;
+        type Cont<_T> = Vec<_T, A>;
+        type Elem = &'a U;
 
-        fn map_to(&self, f: F) -> Self::Cont<Y> {
+        fn apply(&self, f: F) -> Self::Cont<V> {
             self.iter().map(f).collect()
         }
     }
@@ -86,23 +85,22 @@ mod impl_alloc {
         F: FnMut(X) -> Y,
         Vec<Y>: FromIterator<Y>,
     {
-        type Cont<U> = Vec<U>;
+        type Cont<_U> = Vec<_U>;
         type Elem = X;
 
-        fn map_into(self, f: F) -> Self::Cont<Y> {
+        fn apply(self, f: F) -> Self::Cont<Y> {
             self.into_iter().map(f).collect()
         }
     }
 
-    impl<F, X, Y> MapTo<F, Y> for Vec<X>
+    impl<'a, U, V, F> MapTo<F, V> for &'a Vec<U>
     where
-        F: FnMut(&X) -> Y,
-        Vec<Y>: FromIterator<Y>,
+        F: FnMut(&U) -> V,
     {
-        type Cont<U> = Vec<U>;
-        type Elem = X;
+        type Cont<_T> = Vec<_T>;
+        type Elem = &'a U;
 
-        fn map_to(&self, f: F) -> Self::Cont<Y> {
+        fn apply(&self, f: F) -> Self::Cont<V> {
             self.iter().map(f).collect()
         }
     }
