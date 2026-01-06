@@ -32,6 +32,10 @@ where
     fn apply(&self, f: F) -> Self::Cont<X>;
 }
 
+/*
+    ************* Implementations *************
+*/
+
 #[cfg(test)]
 mod tests {
 
