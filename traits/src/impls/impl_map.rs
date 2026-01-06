@@ -43,7 +43,7 @@ where
 
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
-    use crate::ops::map::{MapInto, MapTo};
+    use crate::ops::{MapInto, MapTo};
     use alloc::alloc::Allocator;
     use alloc::vec::Vec;
 

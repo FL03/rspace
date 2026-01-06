@@ -30,6 +30,7 @@ rspace-traits = { default-features = false, path = "traits", version = "0.0.8" }
 criterion = { version = "0.8" }
 # data structures
 hashbrown = { default-features = false, version = "0.16" }
+ndarray = { default-features = false, version = "0.17" }
 # error handling
 anyhow = { default-features = false, version = "1" }
 thiserror = { default-features = false, version = "2" }
