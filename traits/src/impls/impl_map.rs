@@ -41,9 +41,30 @@ where
     }
 }
 
+#[cfg(feature = "ndarray")]
+mod impl_ndarray {
+    use super::MapTo;
+    use ndarray::{Array, ArrayBase, Data, Dimension};
+
+    impl<A, B, S, D, F> MapTo<F, B> for ArrayBase<S, D, A>
+    where
+        A: Clone,
+        D: Dimension,
+        S: Data<Elem = A>,
+        F: Fn(A) -> B,
+    {
+        type Cont<V> = Array<V, D>;
+        type Elem = A;
+
+        fn apply(&self, f: F) -> Self::Cont<B> {
+            self.mapv(f)
+        }
+    }
+}
+
 #[cfg(all(feature = "alloc", feature = "nightly"))]
 mod impl_alloc {
-    use crate::ops::{MapInto, MapTo};
+    use super::{MapInto, MapTo};
     use alloc::alloc::Allocator;
     use alloc::vec::Vec;
 
@@ -77,7 +98,7 @@ mod impl_alloc {
 
 #[cfg(all(feature = "alloc", not(feature = "nightly")))]
 mod impl_alloc {
-    use crate::ops::{MapInto, MapTo};
+    use super::{MapInto, MapTo};
     use alloc::vec::Vec;
 
     impl<F, X, Y> MapInto<F, Y> for Vec<X>

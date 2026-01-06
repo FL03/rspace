@@ -54,6 +54,7 @@ default = ["std"]
 full = [
   "default",
   "complex",
+  "ndarray",
   "hashbrown",
   "json",
   "rand",
@@ -102,6 +103,11 @@ alloc = [
 complex = [
   "rspace-core/complex",
   "rspace-traits/complex",
+]
+
+ndarray = [
+  "rspace-core/ndarray",
+  "rspace-traits/ndarray",
 ]
 
 hashbrown = [

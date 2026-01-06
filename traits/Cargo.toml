@@ -49,6 +49,7 @@ default = ["std"]
 full = [
   "default",
   "complex",
+  "ndarray",
   "hashbrown",
   "rand",
   "serde",
