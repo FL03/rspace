@@ -3,6 +3,10 @@
     Contrib: @FL03
 */
 
+#[deprecated(
+    since = "0.0.7",
+    note = "The `Functor` trait has been renamed to `MapTo` and `MapInto` for better clarity."
+)]
 /// The [`Functor`] trait describes an interface for a higher-kinded type that can be mapped
 /// over. The trait is parameterized over a function `F` and a target type `T`, allowing for
 /// granular control over the mapping process itself, relying on associated types like
@@ -34,6 +38,7 @@ where
 /*
  *************  Implementations  *************
 */
+#[allow(deprecated)]
 impl<U, V, F> Functor<F, V> for Option<U>
 where
     F: FnOnce(U) -> V,
@@ -46,6 +51,7 @@ where
     }
 }
 
+#[allow(deprecated)]
 impl<'a, U, V, F> Functor<F, V> for &'a Option<U>
 where
     F: FnOnce(&U) -> V,
@@ -58,6 +64,7 @@ where
     }
 }
 
+#[allow(deprecated)]
 #[cfg(test)]
 mod tests {
     use super::*;

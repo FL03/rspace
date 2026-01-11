@@ -3,36 +3,59 @@
     Created At: 2026.01.01:21:31:12
     Contrib: @FL03
 */
-/// The [`MapTo`] trait defines an interface for containers able to _map_ or apply a given
-/// function onto a reference to each of its constituting elements, producing a new container
-/// with the results of those function applications. The construction of the trait itself
-/// allows implementors to have granular controls over exactly which type of function and
-/// output is being produced, relying on associated type parameters to define the container
-/// and its _current_ element type.  
+/// [`MapInto`] defines an interface for containers capable of applying a given function onto
+/// each of their elements and consuming the container in the process, producing a new
+/// container containing the captured results of each invocation. The trait's design allows
+/// implementors to specify the exact function signature and output type, utilizing associated
+/// type parameters to define the container and its _current_ element type.
+pub trait MapInto<F, T>
+where
+    F: FnOnce(Self::Elem) -> T,
+{
+    type Cont<_T>: ?Sized;
+    /// the current type of element associated with the contained
+    type Elem;
+
+    fn apply(self, f: F) -> Self::Cont<T>;
+}
+
+/// The [`MapTo`] trait is similar to [`MapInto`], but it operates on references to the
+/// container rather than consuming it. This allows for mapping functions over the elements
+/// of a container while retaining ownership of the original container.  
 pub trait MapTo<F, X>
 where
-    F: FnOnce(&Self::Elem) -> X,
+    F: FnOnce(Self::Elem) -> X,
 {
     type Cont<T>: ?Sized;
     type Elem;
 
-    fn map_to(&self, f: F) -> Self::Cont<X>;
-}
-/// [`MapInto`] describes a consuming interface for containers that enables the mapping of a
-/// given function onto each element of the container. While the trait definition constrains
-/// the generic function parameters, `F` to a `FnOnce` closure, implementors coulds choose
-/// to strengthen this constraint to `FnMut` or `Fn` as needed.
-pub trait MapInto<F, X>
-where
-    F: FnOnce(Self::Elem) -> X,
-{
-    type Cont<U>: ?Sized;
-    /// the current type of element associated with the contained
-    type Elem;
-
-    fn map_into(self, f: F) -> Self::Cont<X>;
+    fn apply(&self, f: F) -> Self::Cont<X>;
 }
 
 /*
  ************* Implementations *************
 */
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn test_map_into_on_option() {
+        use super::MapInto;
+        fn sample_once(input: u8) -> f32 {
+            input as f32 + 1.25
+        }
+        let exp = Some(43.25f32);
+        assert_eq! { Some(42u8).apply(sample_once), exp }
+    }
+
+    #[test]
+    fn test_map_to_on_option() {
+        use super::MapTo;
+        fn sample_ref(input: &u8) -> f32 {
+            *input as f32 + 1.25
+        }
+        let exp = Some(43.25f32);
+        assert_eq! { Some(&42u8).apply(sample_ref), exp }
+    }
+}

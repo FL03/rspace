@@ -3,8 +3,8 @@
     Created At: 2025.12.24:17:20:29
     Contrib: @FL03
 */
-/// [`Apply`] defines an interface for objects capable of _applying_ the given function onto
-/// itself or its elements to produce some output.
+/// [`Apply`] establishes a binary operator for applying a given object, typically a function or
+/// closure, onto a target object, producing some output.
 pub trait Apply<Rhs> {
     type Output;
 

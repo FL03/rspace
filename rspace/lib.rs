@@ -27,7 +27,7 @@ pub use rspace_traits as traits;
 #[doc(inline)]
 pub use rspace_core::*;
 #[doc(inline)]
-pub use rspace_traits::*;
+pub use rspace_traits::prelude::*;
 // prelude
 #[doc(hidden)]
 pub mod prelude {

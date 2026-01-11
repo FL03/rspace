@@ -34,6 +34,7 @@ test = true
 [dependencies]
 # data-structures
 hashbrown = { optional = true, workspace = true }
+ndarray = { optional = true, workspace = true }
 # mathematics
 num-complex = { optional = true, workspace = true }
 num-traits = { workspace = true }
@@ -48,19 +49,24 @@ default = ["std"]
 full = [
   "default",
   "complex",
+  "ndarray",
   "hashbrown",
   "rand",
   "serde",
 ]
 
+# ********* [FF] Features *********
+
 nightly = [
   "hashbrown?/nightly",
 ]
 
-# ************* [FF:Environments] *************
+# ********* [FF] Environments *********
+
 std = [
   "alloc",
   "hashbrown?/default",
+  "ndarray?/std",
   "num-complex?/std",
   "num-traits/std",
 ]
@@ -70,7 +76,9 @@ wasi = []
 wasm = [
   "wasm_bindgen",
 ]
-# ************* [FF:Dependencies] *************
+
+# ********* [FF] Dependencies *********
+
 alloc = [
   "hashbrown?/alloc",
 ]
@@ -78,6 +86,8 @@ alloc = [
 complex = ["dep:num-complex"]
 
 hashbrown = ["dep:hashbrown"]
+
+ndarray = ["dep:ndarray"]
 
 rayon = [
   "hashbrown?/rayon",
@@ -89,6 +99,7 @@ rand = [
 
 serde = [
   "hashbrown?/serde",
+  "ndarray?/serde",
   "num-complex/serde",
 ]
 
