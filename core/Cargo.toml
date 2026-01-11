@@ -81,6 +81,7 @@ nightly = [
 # ********* [FF] Environments *********
 std = [
   "alloc",
+  "getrandom?/std",
   "rspace-traits/std",
   "hashbrown?/default",
   "num-complex?/std",
