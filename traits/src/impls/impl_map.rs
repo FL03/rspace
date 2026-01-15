@@ -83,29 +83,30 @@ mod impl_alloc {
     use alloc::alloc::Allocator;
     use alloc::vec::Vec;
 
-    impl<U, V, A, F> MapInto<F, V> for Vec<U, A>
+    impl<F, X, Y, A> MapInto<F, Y> for Vec<X, A>
     where
         A: Allocator,
-        F: FnMut(U) -> V,
-        Vec<V, A>: FromIterator<V>,
+        F: FnMut(X) -> Y,
+        Vec<Y, A>: FromIterator<Y>,
     {
         type Cont<_T> = Vec<_T, A>;
-        type Elem = U;
+        type Elem = X;
 
-        fn apply(self, f: F) -> Self::Cont<V> {
+        fn apply(self, f: F) -> Self::Cont<Y> {
             self.into_iter().map(f).collect()
         }
     }
 
-    impl<'a, U, V, A, F> MapTo<F, V> for &'a Vec<U, A>
+    impl<'a, F, X, Y, A> MapTo<F, Y> for &'a Vec<X, A>
     where
         A: Allocator,
-        F: FnMut(&U) -> V,
+        F: FnMut(&X) -> Y,
+        Vec<Y, A>: FromIterator<Y>,
     {
         type Cont<_T> = Vec<_T, A>;
-        type Elem = &'a U;
+        type Elem = &'a X;
 
-        fn apply(&self, f: F) -> Self::Cont<V> {
+        fn apply(&self, f: F) -> Self::Cont<Y> {
             self.iter().map(f).collect()
         }
     }
@@ -132,6 +133,7 @@ mod impl_alloc {
     impl<'a, U, V, F> MapTo<F, V> for &'a Vec<U>
     where
         F: FnMut(&U) -> V,
+        Vec<V>: FromIterator<V>,
     {
         type Cont<_T> = Vec<_T>;
         type Elem = &'a U;
