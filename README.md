@@ -6,19 +6,22 @@
 
 ***
 
-_**The library is currently in the early stages of development and is not yet ready for production use.**_
-
 rspace is a library dedicated to providing robust abstractions for creating and working with containers (or spaces) within Rust. It aims to offer a flexible solution for managing collections of items, with a focus on safety, efficiency, and ease of use.
 
 ## Features
 
 - [x] `RawSpace` - The core abstraction for defining spaces.
-- [x] `Container<T>` - A higher-kinded trait for defining containers.
-- [x] `Store<T>` - A trait for defining key-value stores.
+- [x] `Container<T>` - A higher-kinded trait establishing a common interface for all container types.
 
 ## Getting Started
 
-Add this to your `Cargo.toml`:
+To get started using `rspace`, you can run the following command to add it to your project:
+
+```bash
+cargo add rspace
+```
+
+or, you can manually add it to your `Cargo.toml`:
 
 ```toml
 [dependencies.rspace]
@@ -26,9 +29,7 @@ features = []
 version = "0.0.1"
 ```
 
-### Examples
-
-#### _Basic Usage_
+### Basic Usage
 
 ```rust
     extern crate rspace;
