@@ -27,10 +27,7 @@ on:
         description: "Choose which toolchain to test (stable, nightly, all)"
         required: true
         type: choice
-        options:
-          - stable
-          - nightly
-          - all
+        options: [stable, nightly, all]
 
 env:
   CARGO_TERM_COLOR: always
@@ -61,7 +58,7 @@ jobs:
       - name: Build the workspace
         run: cargo build -r --locked --workspace --features full --target ${{ matrix.target }}
   test:
-    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.toolchain != 'nightly') || true
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.toolchain != 'nightly'
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -81,6 +78,8 @@ jobs:
         with:
           cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           target: ${{ matrix.target }}
+          toolchain: stable
+          override: true
       - name: Test (default)
         if: matrix.features == 'default'
         run: cargo test -r --locked --workspace --target ${{ matrix.target}}
@@ -88,7 +87,7 @@ jobs:
         if: matrix.features != 'default'
         run: cargo test -r --locked --workspace --target ${{ matrix.target}} --features ${{ matrix.features }}
   test_nightly:
-    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.toolchain != 'stable') || true
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.toolchain != 'stable'
     continue-on-error: true
     needs: build
     runs-on: ubuntu-latest
