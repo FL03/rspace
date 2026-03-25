@@ -74,7 +74,6 @@ macros = []
 
 nightly = [
   "hashbrown?/nightly",
-  "rand?/nightly",
   "rspace-traits/nightly",
 ]
 
@@ -91,6 +90,7 @@ std = [
   "serde?/std",
   "serde_json?/std",
   "thiserror/std",
+  "wasm-bindgen?/std",
 ]
 
 wasi = [
@@ -111,6 +111,7 @@ alloc = [
   "rand_distr?/alloc",
   "serde?/alloc",
   "serde_json?/alloc",
+  "wasm-bindgen?/gg-alloc",
 ]
 
 complex = ["dep:num-complex"]
@@ -139,8 +140,8 @@ rayon = [
 
 rng = [
   "dep:getrandom",
-  "rand?/os_rng",
-  "rand?/small_rng",
+  "getrandom?/sys_rng",
+  "rand?/sys_rng",
 ]
 
 serde = [

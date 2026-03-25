@@ -19,7 +19,7 @@ keywords = ["containers", "hkt", "space", "mathematics", "science"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/FL03/rspace.git"
-rust-version = "1.85.0"
+rust-version = "1.93.0"
 version = "0.1.0"
 
 [workspace.dependencies]
@@ -41,15 +41,17 @@ tracing-subscriber = { version = "0.3" }
 num-complex = { default-features = false, version = "0.4" }
 num-traits = { default-features = false, version = "0.2" }
 # random
-getrandom = { default-features = false, version = "0.3" }
-rand = { default-features = false, version = "0.9" }
-rand_distr = { default-features = false, version = "0.5" }
+getrandom = { default-features = false, version = "0.4" }
+rand = { default-features = false, version = "0.10" }
+rand_distr = { default-features = false, version = "0.6" }
 # serialization
 serde = { default-features = false, features = ["derive"], version = "1" }
 serde_derive = { default-features = false, version = "1" }
 serde_json = { default-features = false, version = "1" }
 # macros & utilities
 paste = { version = "1" }
+smart-default = { default-features = false, version = "0.7" }
+strum = { default-features = false, features = ["derive"], version = "0.28" }
 # WebAssembly
 wasm-bindgen = { default-features = false, version = "0.2" }
 

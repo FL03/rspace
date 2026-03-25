@@ -69,11 +69,15 @@ std = [
   "ndarray?/std",
   "num-complex?/std",
   "num-traits/std",
+  "wasm-bindgen?/std",
 ]
 
-wasi = []
+wasi = [
+  "default",
+]
 
 wasm = [
+  "default",
   "wasm_bindgen",
 ]
 
@@ -81,6 +85,7 @@ wasm = [
 
 alloc = [
   "hashbrown?/alloc",
+  "wasm-bindgen?/gg-alloc",
 ]
 
 complex = ["dep:num-complex"]

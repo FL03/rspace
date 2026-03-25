@@ -14,15 +14,6 @@ where
     type Cont<V>: ?Sized;
 }
 
-pub trait ContainerIndex<T, Idx>: Container<T>
-where
-    Self::Cont<T>: RawSpace<Elem = T> + core::ops::Index<Idx, Output = T>,
-{
-    type Output;
-
-    fn get(&self, index: Idx) -> Option<&Self::Output>;
-}
-
 /// The [`ContainerIter`] trait extends the [`Container`] trait to provide an interface
 /// for obtaining iterators over the elements of the container.
 pub trait ContainerIter<T>: Container<T>

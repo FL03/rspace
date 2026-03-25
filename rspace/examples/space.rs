@@ -14,7 +14,7 @@ fn main() -> rspace::Result<()> {
         .with_timer(tracing_subscriber::fmt::time::uptime())
         .init();
 
-    tracing::info! { "Welcome to rspace!" }
+    tracing::info! { "Welcome to {p}!", p = env!("CARGO_PKG_NAME") }
 
     let container = Something([1, 2, 3, 4, 5]);
     tracing::info! { ?container }

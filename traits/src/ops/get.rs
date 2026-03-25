@@ -3,6 +3,16 @@
     Created At: 2025.12.29:15:17:51
     Contrib: @FL03
 */
+use crate::{Container, RawSpace};
+
+pub trait Getter<T, Idx>: Container<T>
+where
+    Self::Cont<T>: RawSpace<Elem = T> + core::ops::Index<Idx, Output = T>,
+{
+    type Output;
+
+    fn get(&self, index: Idx) -> Option<&Self::Output>;
+}
 
 /// [`Get`] defines an interface for entities that can be accessed by a key; the design is
 /// similar to the [`Index`](core::ops::Index) trait in the standard library, however, uses the
