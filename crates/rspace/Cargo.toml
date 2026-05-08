@@ -1,0 +1,140 @@
+[package]
+build = "build.rs"
+name = "rspace"
+
+authors.workspace = true
+categories.workspace = true
+description.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+readme.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[package.metadata.docs.rs]
+all-features = false
+features = ["default"]
+rustc-args = ["--cfg", "docsrs"]
+version = "v{{version}}"
+
+[package.metadata.release]
+no-dev-version = true
+tag-name = "v{{version}}"
+
+[lib]
+bench = true
+path = "lib.rs"
+
+[[bench]]
+harness = false
+name = "default"
+
+[[example]]
+name = "space"
+required-features = ["default"]
+
+[dependencies]
+rspace-core = { workspace = true }
+rspace-traits = { workspace = true }
+
+[dev-dependencies]
+criterion = { features = ["plotters"], workspace = true }
+tracing = { features = ["default", "log"], workspace = true }
+tracing-subscriber = { features = ["fmt", "env-filter"], workspace = true }
+
+[features]
+default = ["std"]
+
+full = [
+  "default",
+  "complex",
+  "json",
+  "rand",
+  "serde",
+]
+
+# ********* [FF] Features *********
+macros = [
+  "rspace-core/macros",
+]
+
+nightly = [
+  "rspace-core/nightly",
+]
+
+json = [
+  "alloc",
+  "serde",
+  "serde_json",
+]
+
+# ********* [FF] Environments *********
+std = [
+  "alloc",
+  "rspace-core/std",
+  "rspace-traits/std",
+]
+
+wasi = [
+  "rspace-core/wasi",
+  "rspace-traits/wasi",
+]
+
+wasm = [
+  "wasm_bindgen",
+  "rspace-core/wasm",
+  "rspace-traits/wasm",
+]
+
+# ********* [FF] Dependencies *********
+alloc = [
+  "rspace-core/alloc",
+  "rspace-traits/alloc",
+]
+
+complex = [
+  "rspace-core/complex",
+  "rspace-traits/complex",
+]
+
+ndarray = [
+  "rspace-core/ndarray",
+  "rspace-traits/ndarray",
+]
+
+hashbrown = [
+  "rspace-core/hashbrown",
+  "rspace-traits/hashbrown",
+]
+
+rand = [
+  "rspace-core/rand",
+  "rspace-traits/rand",
+  "rng",
+]
+
+rayon = [
+  "rspace-core/rayon",
+  "rspace-traits/rayon",
+]
+
+rng = [
+  "rspace-core/rng",
+]
+
+serde = [
+  "rspace-core/serde",
+  "rspace-traits/serde",
+]
+
+serde_json = [
+  "rspace-core/serde_json",
+]
+
+wasm_bindgen = [
+  "rspace-core/wasm_bindgen",
+  "rspace-traits/wasm_bindgen",
+]

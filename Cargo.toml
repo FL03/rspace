@@ -1,9 +1,9 @@
 [workspace]
-default-members = ["rspace"]
+default-members = [
+  "crates/rspace",
+]
 members = [
-  "rspace",
-  "core",
-  "traits",
+  "crates/*",
 ]
 resolver = "3"
 
@@ -19,17 +19,17 @@ keywords = ["containers", "hkt", "space", "mathematics", "science"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/FL03/rspace.git"
-rust-version = "1.93.0"
+rust-version = "1.95.0"
 version = "0.1.0"
 
 [workspace.dependencies]
-rspace = { default-features = false, path = "rspace", version = "0.1.0" }
-rspace-core = { default-features = false, path = "core", version = "0.1.0" }
-rspace-traits = { default-features = false, path = "traits", version = "0.1.0" }
+rspace = { default-features = false, path = "crates/rspace", version = "0.1.0" }
+rspace-core = { default-features = false, path = "crates/core", version = "0.1.0" }
+rspace-traits = { default-features = false, path = "crates/traits", version = "0.1.0" }
 # development & benchmarking
 criterion = { version = "0.8" }
 # data structures
-hashbrown = { default-features = false, version = "0.16" }
+hashbrown = { default-features = false, version = "0.17" }
 ndarray = { default-features = false, version = "0.17" }
 # error handling
 anyhow = { default-features = false, version = "1" }

@@ -10,9 +10,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 on:
-  pull_request:
-    branches: [main, master]
-    types: [closed]
+  push:
+    tags: [latest, v*]
   release:
     types: [published]
   repository_dispatch:
@@ -40,7 +39,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.event.client_payload.ref }}
+          fetch-depth: 1
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.client_payload.ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:

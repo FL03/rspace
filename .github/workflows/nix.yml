@@ -5,11 +5,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 on:
-  pull_request:
-    branches: [main, master]
-    types: [closed, opened, reopened]
   push:
-    branches: [main, master]
     tags: [latest, v*.*.*, "*-nightly"]
   repository_dispatch:
     types: [nix, nix-build]
@@ -25,10 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           repository: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          token: ${{ github.token }}
+          ref: ${{ github.event.client_payload.ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Nix
         uses: cachix/install-nix-action@v31
         with:

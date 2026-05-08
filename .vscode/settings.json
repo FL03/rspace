@@ -1,3 +1,8 @@
 {
-  "rust-analyzer.check.features": ["default", "full", "alloc", "std", "rand", "serde", "complex"]
+  "rust-analyzer.cargo.autoreload": true,
+  "rust-analyzer.checkOnSave": true,
+  "rust-analyzer.check.features": [
+    "default",
+    "full"
+  ]
 }

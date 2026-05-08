@@ -26,9 +26,6 @@ tag-name = "{{version}}"
 
 [lib]
 bench = false
-crate-type = ["lib"]
-doctest = true
-test = true
 
 [dependencies]
 rspace-traits = { workspace = true }
@@ -56,14 +53,12 @@ default = ["std"]
 full = [
   "default",
   "complex",
-  "ndarray",
-  "hashbrown",
   "json",
   "rand",
-  "serde",
 ]
 
-# ********* [FF] Features *********
+# ********* [FF] Flags *********
+
 json = [
   "alloc",
   "serde",
@@ -72,12 +67,18 @@ json = [
 
 macros = []
 
-nightly = [
-  "hashbrown?/nightly",
-  "rspace-traits/nightly",
+# ********* [FF] Standard Library *********
+
+alloc = [
+  "rspace-traits/alloc",
+  "hashbrown?/alloc",
+  "rand?/alloc",
+  "rand_distr?/alloc",
+  "serde?/alloc",
+  "serde_json?/alloc",
+  "wasm-bindgen?/gg-alloc",
 ]
 
-# ********* [FF] Environments *********
 std = [
   "alloc",
   "getrandom?/std",
@@ -93,6 +94,12 @@ std = [
   "wasm-bindgen?/std",
 ]
 
+# ********* [FF] Targets *********
+nightly = [
+  "hashbrown?/nightly",
+  "rspace-traits/nightly",
+]
+
 wasi = [
   "rspace-traits/wasi",
 ]
@@ -104,16 +111,6 @@ wasm = [
 ]
 
 # ********* [FF] Dependencies *********
-alloc = [
-  "rspace-traits/alloc",
-  "hashbrown?/alloc",
-  "rand?/alloc",
-  "rand_distr?/alloc",
-  "serde?/alloc",
-  "serde_json?/alloc",
-  "wasm-bindgen?/gg-alloc",
-]
-
 complex = ["dep:num-complex"]
 
 ndarray = [
