@@ -26,7 +26,9 @@
 ## Operating Systems
 
 ### NixOS
-!flake.lock
+**/.nix
+
+!**/flake.lock
 
 ### Windows (WSL2)
 **/*:Zone.Identifier
@@ -39,6 +41,14 @@
 *.env
 *.env.*
 
+
+*.envrc
+*.envrc.*
+
+!**/.envrc
+
+!**/default.env
+!**/example.env
 !**/default.env
 !**/example.env
 

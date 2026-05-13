@@ -1,4 +1,5 @@
-name: clippy
+# description: run cargo clippy
+name: cargo-clippy
 
 concurrency:
   cancel-in-progress: false
@@ -6,27 +7,26 @@ concurrency:
 
 on:
   pull_request:
-    types: [auto_merge_enabled, opened, ready_for_review, reopened]
-  push:
     branches: [main, master]
-    tags: [latest, v*.*.*, "*-nightly"]
+    types: [auto_merge_enabled, ready_for_review]
+  push:
+    tags: [latest, v*]
   repository_dispatch:
     types: [clippy, cargo-clippy]
   workflow_dispatch:
 
-permissions:
-  actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
-  contents: read
-  security-events: write
-  statuses: write
-
 jobs:
   clippy:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      statuses: write
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           repository: ${{ github.repository }}
           ref: ${{ github.event.client_payload.ref || github.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}

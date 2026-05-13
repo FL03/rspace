@@ -1,15 +1,15 @@
-# Quickstart Guide `contained`
+# Quickstart Guide `rspace`
 
-Welcome to the quickstart guide for the `contained` library! This guide will help you get started with the library and provide you with the necessary steps to set up your development environment.
+Welcome to the quickstart guide for the `rspace` library! This guide will help you get started with the library and provide you with the necessary steps to set up your development environment.
 
 ## Getting Started
 
 ### Prerequisites
 
-Before you can start using the `contained` library, you need to have the following tools installed on your machine:
+Before you can start using the `rspace` library, you need to have the following tools installed on your machine:
 
 - [Git](https://git-scm.com/downloads) - for version control and cloning the repository.
-- [Rust](https://www.rust-lang.org/tools/install) - the programming language used to develop the `contained` library.
+- [Rust](https://www.rust-lang.org/tools/install) - the programming language used to develop the `rspace` library.
 - [Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) - the Rust package manager and build system, which is included with Rust.
 
 Optionally, you may also want to install the following tools for development:
@@ -39,13 +39,13 @@ rustup update
 Start by cloning the repository locally to your machine:
 
 ```bash
-git clone https://github.com/FL03/contained.git --branch main
+git clone https://github.com/FL03/rspace.git --branch main
 ```
 
 Then, navigate to the cloned directory:
 
 ```bash
-cd contained
+cd rspace
 ```
 
 To build the project, use `cargo build` command:

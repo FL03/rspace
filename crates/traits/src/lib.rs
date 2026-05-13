@@ -1,10 +1,17 @@
-#![crate_name = "rspace_traits"]
+/*
+    Appellation: rspace-traits <library>
+    Created At: 2026.05.13:07:00:31
+    Contrib: @FL03
+*/
 //! Various traits used to establish a solid foundation for defining and manipulating
 //! containers, spaces, fields, and other related abstractions. The core trait, [`RawSpace`],
 //! is a fundamental building block for defining _spaces_ (i.e. containers containing elements
 //! of a specific type). The [`Container`] trait builds upon [`RawSpace`] to provide a more
 //! robust interface for containers and higher-kinded abstractions.
 #![allow(
+    async_fn_in_trait,
+    non_snake_case,
+    unused_features,
     clippy::missing_errors_doc,
     clippy::missing_safety_doc,
     clippy::module_inception,
@@ -13,10 +20,7 @@
     clippy::upper_case_acronyms
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(feature = "nightly", feature(allocator_api))]
-// // compiler check
-// #[cfg(not(any(feature = "std", feature = "alloc")))]
-// compile_error! { "either the \"std\" or \"alloc\" feature must be enabled" }
+#![cfg_attr(all(feature = "nightly", feature = "alloc"), feature(allocator_api))]
 // macros
 #[macro_use]
 pub(crate) mod macros {
@@ -41,29 +45,23 @@ mod impls {
 }
 
 pub mod ops {
-    //! This module provides various operations traits and implementations for musical concepts
+    //! This module defines compsable operators on containers.
     #[doc(inline)]
     pub use self::{apply::*, get::*, map::*};
 
     mod apply;
     mod get;
     mod map;
-
-    pub(crate) mod prelude {
-        pub use super::apply::*;
-        pub use super::get::*;
-        pub use super::map::*;
-    }
 }
 // re-exports
 #[doc(inline)]
-pub use self::{container::*, functor::*, ops::prelude::*, space::*, store::*};
+pub use self::{container::*, functor::*, ops::*, space::*, store::*};
 // prelude
 #[doc(hidden)]
 pub mod prelude {
     pub use crate::container::*;
     pub use crate::functor::*;
-    pub use crate::ops::prelude::*;
+    pub use crate::ops::*;
     pub use crate::space::*;
     pub use crate::store::*;
 }

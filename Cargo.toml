@@ -1,9 +1,9 @@
 [workspace]
-default-members = ["rspace"]
+default-members = [
+  "crates/rspace",
+]
 members = [
-  "rspace",
-  "core",
-  "traits",
+  "crates/*",
 ]
 resolver = "3"
 
@@ -19,17 +19,17 @@ keywords = ["containers", "hkt", "space", "mathematics", "science"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/FL03/rspace.git"
-rust-version = "1.85.0"
-version = "0.0.9"
+rust-version = "1.95.0"
+version = "0.1.0"
 
 [workspace.dependencies]
-rspace = { default-features = false, path = "rspace", version = "0.0.9" }
-rspace-core = { default-features = false, path = "core", version = "0.0.9" }
-rspace-traits = { default-features = false, path = "traits", version = "0.0.9" }
+rspace = { default-features = false, path = "crates/rspace", version = "0.1.0" }
+rspace-core = { default-features = false, path = "crates/core", version = "0.1.0" }
+rspace-traits = { default-features = false, path = "crates/traits", version = "0.1.0" }
 # development & benchmarking
 criterion = { version = "0.8" }
 # data structures
-hashbrown = { default-features = false, version = "0.16" }
+hashbrown = { default-features = false, version = "0.17" }
 ndarray = { default-features = false, version = "0.17" }
 # error handling
 anyhow = { default-features = false, version = "1" }
@@ -41,15 +41,17 @@ tracing-subscriber = { version = "0.3" }
 num-complex = { default-features = false, version = "0.4" }
 num-traits = { default-features = false, version = "0.2" }
 # random
-getrandom = { default-features = false, version = "0.3" }
-rand = { default-features = false, version = "0.9" }
-rand_distr = { default-features = false, version = "0.5" }
+getrandom = { default-features = false, version = "0.4" }
+rand = { default-features = false, version = "0.10" }
+rand_distr = { default-features = false, version = "0.6" }
 # serialization
 serde = { default-features = false, features = ["derive"], version = "1" }
 serde_derive = { default-features = false, version = "1" }
 serde_json = { default-features = false, version = "1" }
 # macros & utilities
 paste = { version = "1" }
+smart-default = { default-features = false, version = "0.7" }
+strum = { default-features = false, features = ["derive"], version = "0.28" }
 # WebAssembly
 wasm-bindgen = { default-features = false, version = "0.2" }
 
@@ -72,8 +74,13 @@ debug = false
 debug-assertions = false
 incremental = false
 lto = "fat"
-opt-level = "z"
+opt-level = 3
 overflow-checks = false
 panic = "abort"
 rpath = false
 strip = "debuginfo"
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+strip = true
