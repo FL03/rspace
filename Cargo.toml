@@ -74,8 +74,13 @@ debug = false
 debug-assertions = false
 incremental = false
 lto = "fat"
-opt-level = "z"
+opt-level = 3
 overflow-checks = false
 panic = "abort"
 rpath = false
 strip = "debuginfo"
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+strip = true
