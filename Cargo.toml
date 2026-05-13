@@ -20,12 +20,12 @@ license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/FL03/rspace.git"
 rust-version = "1.95.0"
-version = "0.1.0"
+version = "0.1.1"
 
 [workspace.dependencies]
-rspace = { default-features = false, path = "crates/rspace", version = "0.1.0" }
-rspace-core = { default-features = false, path = "crates/core", version = "0.1.0" }
-rspace-traits = { default-features = false, path = "crates/traits", version = "0.1.0" }
+rspace = { default-features = false, path = "crates/rspace", version = "0.1.1" }
+rspace-core = { default-features = false, path = "crates/core", version = "0.1.1" }
+rspace-traits = { default-features = false, path = "crates/traits", version = "0.1.1" }
 # development & benchmarking
 criterion = { version = "0.8" }
 # data structures
