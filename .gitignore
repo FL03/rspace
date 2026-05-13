@@ -39,6 +39,14 @@
 *.env
 *.env.*
 
+
+*.envrc
+*.envrc.*
+
+!**/.envrc
+
+!**/default.env
+!**/example.env
 !**/default.env
 !**/example.env
 

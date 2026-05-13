@@ -12,8 +12,6 @@ concurrency:
 on:
   push:
     tags: [latest, v*]
-  release:
-    types: [published]
   repository_dispatch:
     types: [cargo-bench]
   workflow_dispatch:
