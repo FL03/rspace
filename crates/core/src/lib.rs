@@ -4,13 +4,14 @@
 */
 //! this modules defines the core pimitives and utilities for `rspace`
 #![allow(
+    unused_features,
     clippy::missing_safety_doc,
     clippy::module_inception,
     clippy::needless_doctest_main,
     clippy::upper_case_acronyms
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(all(feature = "alloc", feature = "nightly"), feature(allocator_api))]
+#![cfg_attr(all(feature = "nightly", feature = "alloc"), feature(allocator_api))]
 // external crates
 #[cfg(feature = "alloc")]
 extern crate alloc;

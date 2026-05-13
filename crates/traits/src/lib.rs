@@ -11,6 +11,7 @@
 #![allow(
     async_fn_in_trait,
     non_snake_case,
+    unused_features,
     clippy::missing_errors_doc,
     clippy::missing_safety_doc,
     clippy::module_inception,
@@ -19,7 +20,7 @@
     clippy::upper_case_acronyms
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(feature = "nightly", feature(allocator_api))]
+#![cfg_attr(all(feature = "nightly", feature = "alloc"), feature(allocator_api))]
 // macros
 #[macro_use]
 pub(crate) mod macros {

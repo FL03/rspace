@@ -16,6 +16,7 @@
 //! to then define generic representations, operations, and otherwise relating to containers.
 //! 
 #![allow(
+    unused_features,
     clippy::missing_errors_doc,
     clippy::missing_safety_doc,
     clippy::module_inception,
