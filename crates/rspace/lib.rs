@@ -1,17 +1,25 @@
-#![crate_name = "rspace"]
-#![crate_type = "lib"]
-//! `rspace` is a fundmanetal crate looking to support containers via a set of well established
-//! interfaces, traits, primitives, and other useful tools. The crate is working towards
-//! becoming `no_std` compatible, seeking to support embedded and other resource constrained
-//! environments. Additionally, the crate is extensively feature-gated to ensure it remains as
-//! lightweight and modular as possible.
+/*
+    Appellation: rspace <library>
+    Created At: 2026.05.13:06:57:09
+    Contrib: @FL03
+*/
+//! Welcome to `rspace`, a crate dedicated to providing a comprehensive suite of tools and 
+//! interfaces for working with containers in Rust. This library is designed to be as flexible 
+//! as possible leveraging feature flags to enable specific functionality whenever needed, 
+//! allowing users to tailor the crate to their specific needs without incurring unnecessary 
+//! overhead.
+//! 
+//! ## Features
+//! 
+//! The `rspace` crate focuses on defining a generic [`Container`] trait used to establish a 
+//! base interface that any *container* type can implement while providing us with an ability 
+//! to then define generic representations, operations, and otherwise relating to containers.
+//! 
 #![allow(
     clippy::missing_errors_doc,
     clippy::missing_safety_doc,
     clippy::module_inception,
     clippy::needless_doctest_main,
-    clippy::should_implement_trait,
-    clippy::upper_case_acronyms
 )]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(all(feature = "alloc", feature = "nightly"), feature(allocator_api))]
