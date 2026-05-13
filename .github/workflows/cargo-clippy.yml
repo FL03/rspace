@@ -6,6 +6,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 on:
+  pull_request:
+    branches: [main, master]
+    types: [auto_merge_enabled, ready_for_review]
   push:
     tags: [latest, v*]
   repository_dispatch:
