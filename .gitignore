@@ -26,6 +26,8 @@
 ## Operating Systems
 
 ### NixOS
+**/.nix
+
 !**/flake.lock
 
 ### Windows (WSL2)
