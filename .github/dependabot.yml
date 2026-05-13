@@ -1,9 +1,5 @@
 version: 2
 updates:
-- package-ecosystem: docker
-  directories: [ /, .docker ]
-  schedule:
-    interval: monthly
 - package-ecosystem: github-actions
   directory: /
   schedule:
@@ -12,4 +8,5 @@ updates:
   schedule:
     interval: monthly
   directories:
+    - /
     - crates/*
