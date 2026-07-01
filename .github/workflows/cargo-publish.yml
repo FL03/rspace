@@ -33,7 +33,7 @@ jobs:
           - rspace
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           repository: ${{ github.repository }}
