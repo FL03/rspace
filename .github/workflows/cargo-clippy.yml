@@ -35,7 +35,7 @@ jobs:
         with:
           cache-key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           components: clippy,rustfmt
-      - uses: taiki-e/install-action@v2
+      - uses: taiki-e/install-action@v2.85.4
         with:
           tool: clippy-sarif sarif-fmt
       - name: Run Clippy
