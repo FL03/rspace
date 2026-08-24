@@ -1,128 +1,210 @@
-# General
 
-**/.artifacts/data
-**/.cache
-**/.docker/data
-
-*.csv
-*.csv.*
-
-*.db
-*.db.*
-
-*.db-*.*
-
-*.lock
-*.lock.*
-
-*-lock.*
-
-*.log
-*.log.*
-
-*.zip
-*.zip.*
-
-## Operating Systems
-
-### NixOS
-**/.nix
-
-!**/flake.lock
-
-### Windows (WSL2)
-**/*:Zone.Identifier
-
-# Configuration Files
-
+# ----- [CONFIG] -----
 **/.config/*.config.*
-!**/default.config.*
 
+**/settings.local.*
+
+!**/settings.default.*
+.axiom/config/bots/*.toml.bak
+
+!**/.config/default.config.*
+
+
+# ----- [DOTENV] -----
 *.env
 *.env.*
 
+*.local.envrc
+*.envrc.local
 
-*.envrc
-*.envrc.*
-
-!**/.envrc
+*.secret.envrc
+*.envrc.secret
 
 !**/default.env
-!**/example.env
-!**/default.env
-!**/example.env
 
-## Development Environments
-**/.direnv/
+!**/.env.default
+!**/.default.env.
 
-### JetBrains IDEs
+!**/example.env
+!**/.env.example
+!**/.example.env.
+
+*.secret
+
+# ----- [SHEPHERD] ------
+# .artifacts/ is scratch + FABLE's toolkit. Sprint report DELIVERABLES belong in
+# .shepherd/runs/{run}/reports/ (not ignored); durable ones in .shepherd/docs/reports/.
+**/.artifacts/backups/
+**/.artifacts/cache/
+**/.artifacts/reports/
+**/.artifacts/temp/
+
+**/.shepherd/backups/
+**/.shepherd/cache/
+**/.shepherd/runs/*/.run.json.lock
+**/.shepherd/temp/
+
+!**/.artifacts/**/.gitkeep
+!**/.artifacts/models/
+
+!.shepherd/.gitkeep
+!**/.shepherd/models/
+
+# ----- [WORKTREES] -----
+**/.worktrees/
+**/worktrees/
+
+# ----- [AGENTS] -----
+**/.agents/agent-memory/
+**/.agents/todos/
+
+**/.claude/agent-memory/
+**/.claude/todos/
+
+**/.remember/tmp
+**/remember/tmp
+
+# ----- [PYTHON] -----
+**/.venv/
+**/__pycache__/
+
+**/venv/
+**/dist/
+*.egg-info/
+
+*.pyc
+*.pyo
+*.pyd
+
+# ----- [NODEJS] -----
+**/build/
+**/node_modules/
+
+# ----- [TYPESCRIPT] -----
+*.tsbuildinfo
+
+# ----- [ATOM] -----
+**/.atom/
+
+# ----- [IntelliJ] -----
 **/.idea/
 
 *.iml
-*.iml.*
+*.ipr
+*.iws
 
-### Visual Studio Code
-**/.vscode/*
+# ----- [VSCODE] -----
+**/.vscode/mcp.json
+**/.vscode/mcp.json
 
-!**/.vscode/settings.json
+# ----- [WSL] -----
+*:Zone.Identifier
 
-# Language Specific
+# ----- [NIX] -----
+**/.nix
+**/.nix-channels
 
-## Rust
-**/debug/
+!**/flake.lock
+
+# ----- [ONNX] -----
+*.onnx.data
+
+# ----- [PI-CODING-AGENT] -----
+**/.pi
+
+!**/.pi/settings.json
+
+# ----- [RUST] -----
+**/rust_out
 **/target/
+# Lane-private CARGO_TARGET_DIR (shepherd sprint convention: each worktree
+# builds against its own target-<lane> to avoid cross-lane target-lease
+# starvation) — never a real crate name, safe to ignore workspace-wide.
+target-*/
+
+*.rs.bk
+
+*.rlib
+*.rlib.*
+
+!**/Cargo.lock
+
+# ----- [PI] -----
+**/.pi/**/artifacts
+**/.pi/**/missions
+**/.pi/fabric
+**/.pi/subagents
+
+!**/.pi/settings.json
+
+# ----- [SUPABASE] -----
+**/supabase/.temp/
+
+polymarket-builder.json
+
+# ----- [MCP] -----
+**/.mcp.json
+**/mcp.json
+
+# ----- [AXIOM] -----
+**/.axiom/.init
+**/.axiom/cache/
+**/.axiom/data/
+**/.axiom/logs/
+**/.axiom/models/
+/.axiom/axiom/spill/clob-ticks.jsonl
+/.axiom/axiom/spill/spot-ticks.jsonl
+
+!.axiom/**/.gitkeep
+!**/axiom.toml
+
+# ----- [DIRECTORIES] -----
+**/.DS_Store
+**/build/
+**/cache/
+**/deps/
+**/dist/
+**/tmp/
+**/temp/
+
+
+# ----- [FILE-EXTENSIONS] -----
+*.bak
+*.bak.*
 
 *.bk
 *.bk.*
 
-!**/Cargo.lock
+*.db
+*.db.*
 
-## Python
-**/__pycache__/
-**/.pytest_cache/
-**/venv/
+*.db-*
 
-*.egg
-*.egg.*
+*.gz
+*.gz.*
 
-*.egg-info
+*.local
+*.local.*
 
-*.pyc
-*.pyc.*
+*.log
+*.log.*
 
-*.pyo
-*.pyo.*
+*.pem
 
-*.pyz
-*.pyz.*
+*.sqlite
+*.sqlite.*
 
-*.pyzw
-*.pyzw.*
+*.sqlite3
+*.sqlite3.*
 
-*.whl
-*.whl.*
+*.zip
+*.zip.*
 
+# ----- [EXCLUSIONS] -----
+!**/.gitkeep
 
-## Node
-**/build/
-**/debug/
-**/dist/
-**/node_modules/
-
-### Frameworks
-
-#### Next.js
-**/.next/
-
-#### SvelteKit
-**/__sapper__/
-**/.DS_STORE/
-**/.svelte-kit/
-
-#### Supabase
-**/.supabase/
-**/supabase/tmp/
-
-#### Vercel
-**/.vercel/
-**/.vercel_build_output/
+!**/src/**/build
+!**/src/**/cache
+!**/src/**/config
+!**/src/**/data
+!**/src/**/tmp

@@ -5,10 +5,30 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 on:
-  push:
-    tags: [latest, v*]
-  repository_dispatch:
-    types: [cargo-build]
+  workflow_call:
+    inputs:
+      no-default-features:
+        description: "Compile the package(s) without default features"
+        required: false
+        type: boolean
+      verbose:
+        description: "Select the features to compile"
+        required: false
+        type: boolean
+      features:
+        description: "Select the features to compile"
+        required: false
+        type: string
+      target:
+        default: x86_64-unknown-linux-gnu
+        description: "Select the target to compile for"
+        required: true
+        type: string
+      toolchain:
+        default: stable
+        description: "Select a toolchain to test (stable, nightly, beta)"
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       target:
@@ -16,13 +36,11 @@ on:
         description: "Select the target to compile for"
         required: false
         type: choice
-        options:
-          [
-            x86_64-unknown-linux-gnu,
-            wasm32-unknown-unknown,
-            wasm32-wasip1,
-            wasm32-wasip2,
-          ]
+        options:          
+          - x86_64-unknown-linux-gnu
+          - wasm32-unknown-unknown
+          - wasm32-wasip1
+          - wasm32-wasip2          
       toolchain:
         default: stable
         description: "Select a toolchain to test (stable, nightly)"
@@ -42,13 +60,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        features: [full, default]
         include:
-          - target: ${{ github.event.inputs.target || 'x86_64-unknown-linux-gnu' }}
+          - features: ${{ github.event.inputs.features }}
+            target: ${{ github.event.inputs.target }}
             toolchain: ${{ github.event.inputs.toolchain || 'stable' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           repository: ${{ github.repository }}

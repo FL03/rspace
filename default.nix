@@ -35,7 +35,7 @@ rustWithWasmTarget = rustPkgs.rust-bin.stable.${rustVersion}.default.override {
   };
 
   common = {
-    version = "0.1.0";
+    version = "0.1.1";
     src = self;
 
     cargoLock = {
