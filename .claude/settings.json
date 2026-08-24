@@ -1,0 +1,38 @@
+{
+  "autoCompactEnabled": true,
+  "autoMemoryEnabled": true,
+  "autoDreamEnabled": true,
+  "effortLevel": "xhigh",
+  "includeCoAuthoredBy": false,
+  "model": "sonnet",
+  "outputStyle": "concise",
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Source control: github.com:pzzld-org/rspace",
+      "Locally installed project toolchain, ALWAYS authorized in any cwd including .worktrees/ lanes and teammate sessions: cargo (check/build/test/nextest/criterion/clippy/fmt/metadata, any CARGO_TARGET_DIR or feature flags), rustup, docker (incl. scripts/docker.sh), gh, git, fly/flyctl, sentry-cli, shctx (every subcommand — it only mutates the local .artifacts registry; never prompt), python3, rg/grep/find/jq/curl.",
+      "Project toolkit and gate scripts: anything under .shepherd/scripts/, plugin hook scripts, and Joe's scripts/*.sh run as-is (never edited) — e.g. scripts/docker.sh mcp --push at close."
+    ]
+  },
+  "enabledPlugins": {
+    "hookify@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "shepherd@shepherd": true,
+    "supabase@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2"
+  },
+  "extraKnownMarketplaces": {
+    "shepherd": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/pzzld-org/shepherd.git"
+      }
+    }
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
+}

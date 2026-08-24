@@ -34,6 +34,14 @@ pub use rspace_traits as traits;
 #[doc(inline)]
 pub use rspace_core::*;
 #[doc(inline)]
+#[cfg(feature = "derive")]
+#[allow(unused_imports)]
+pub use rspace_derive::*;
+#[doc(inline)]
+#[allow(unused_imports)]
+#[cfg(feature = "macros")]
+pub use rspace_macros::*;
+#[doc(inline)]
 pub use rspace_traits::prelude::*;
 // prelude
 #[doc(hidden)]

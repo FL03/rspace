@@ -1,0 +1,411 @@
+name: release
+
+# Patch-release pipeline. Triggered when a patch branch (v*.*.*) merges into the
+# default branch (main): the merge commit subject is "vX.Y.Z", "vX.Y.Z:
+# <summary>", or "release: vX.Y.Z" (gh appends " (#N)" on squash — tolerated).
+# The extracted version is cross-checked against .claude-plugin/plugin.json;
+# non-release pushes to main are skipped cleanly.
+#
+# Flow: v*.*.* → main → build and verify immutable assets → tag and publish vCURRENT.
+# Post-publication branch/version/PR housekeeping runs in gitflow.yml after this
+# workflow completes successfully and verifies the published release custody.
+#
+# The merge into main IS the release event — there is NO separate "release PR
+# vCURRENT → main" step (that PR is the one that just merged). Branch protection
+# on main MUST require PR + linear history + no force-push for a reliable trigger.
+
+concurrency:
+  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+on:
+  # push:
+  #   branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  release-metadata:
+    name: Resolve release metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      proceed: ${{ steps.detect.outputs.proceed }}
+      current: ${{ steps.detect.outputs.current }}
+      tag: ${{ steps.detect.outputs.tag }}
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@v7 # v7.0.1
+        with:
+          fetch-depth: 1
+          ref: ${{ github.sha }}
+      - name: Detect exact release version
+        id: detect
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          subject=$(git log -1 --format=%s HEAD)
+          detect_output=$(scripts/detect-release-commit.sh \
+            --subject "$subject" \
+            --ref "$GITHUB_REF" \
+            --default-branch "$DEFAULT_BRANCH" \
+            --plugin-json .claude-plugin/plugin.json)
+          verdict=''
+          reason=''
+          current=''
+          while IFS= read -r line; do
+            case "$line" in
+              verdict=*) verdict="${line#verdict=}" ;;
+              reason=*) reason="${line#reason=}" ;;
+              version=*) current="${line#version=}" ;;
+            esac
+          done <<<"$detect_output"
+          if [[ "$verdict" == skip ]]; then
+            printf 'proceed=false\n' >> "$GITHUB_OUTPUT"
+            printf '::notice::%s\n' "$reason"
+            exit 0
+          fi
+          {
+            printf 'proceed=true\n'
+            printf 'current=%s\n' "$current"
+            printf 'tag=v%s\n' "$current"
+          } >> "$GITHUB_OUTPUT"
+      - name: Verify version authority
+        if: steps.detect.outputs.proceed == 'true'
+        run: python3 scripts/version-bump.py check --root . --version "${{ steps.detect.outputs.current }}"
+      - name: Verify dependency policy mutations
+        if: steps.detect.outputs.proceed == 'true'
+        run: python3 scripts/tests/test-dependency-policy.py
+      - name: Setup cargo-deny
+        if: steps.detect.outputs.proceed == 'true'
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny
+      - name: Verify live dependency trust
+        if: steps.detect.outputs.proceed == 'true'
+        run: node scripts/check-deps.mjs
+  # ─── Asset production, delegated ───────────────────────────────────────
+  # These jobs used to be inlined here, which made the entire build reachable
+  # through exactly one event: a patch branch merging into main. They now live
+  # in cargo-build.yml, which the release calls with the version pinned by
+  # release-metadata -- and which an operator, a tag push, or a
+  # repository_dispatch can also run on its own, at partial scope, without
+  # cutting a version.
+  build:
+    name: Build release assets
+    needs: release-metadata
+    if: needs.release-metadata.outputs.proceed == 'true'
+    uses: ./.github/workflows/cargo-build.yml
+    permissions:
+      contents: read
+    with:
+      version: ${{ needs.release-metadata.outputs.current }}
+      ref: ${{ github.sha }}
+      scope: all
+
+  # Crates publish AFTER the assets exist and BEFORE the tag. Ordering matters
+  # more than it looks: this ran as its own workflow on the same push trigger,
+  # so it raced the asset builds and won. Two consecutive patch versions were
+  # burned that way -- crates uploaded, a native target failed minutes later,
+  # no tag and no release, and a published version is not reissuable. A failed
+  # asset build must cost a re-run, never a version. `needs: build` is what
+  # enforces that, and it survives the split because the whole build is now one
+  # job to depend on.
+  publish-crates:
+    name: Publish crates once every asset verifies
+    needs: [release-metadata, build]
+    if: needs.release-metadata.outputs.proceed == 'true'
+    uses: ./.github/workflows/cargo-publish.yml
+    permissions:
+      contents: read
+    with:
+      version: ${{ needs.release-metadata.outputs.current }}
+      ref: ${{ github.sha }}
+    secrets:
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  # npm publication, beside crates and under the same rule: both are held
+  # behind every asset job, and both run before the tag. Nothing published to
+  # crates.io or npm before this sprint's split could be un-published, and a
+  # failed asset build must cost a re-run, never a version.
+  publish-npm:
+    name: Publish npm packages once every asset verifies
+    needs: [release-metadata, build]
+    if: needs.release-metadata.outputs.proceed == 'true'
+    uses: ./.github/workflows/npm-publish.yml
+    permissions:
+      contents: read
+    with:
+      version: ${{ needs.release-metadata.outputs.current }}
+      ref: ${{ github.sha }}
+    secrets:
+      NPM_REGISTRY_TOKEN: ${{ secrets.NPM_REGISTRY_TOKEN }}
+
+  release:
+    name: Publish verified release
+    needs: [release-metadata, build, publish-crates, publish-npm]
+    if: needs.release-metadata.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7 # v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+      - name: Detect release commit
+        id: detect
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          subject=$(git log -1 --format=%s HEAD)
+          detect_output=$(scripts/detect-release-commit.sh \
+            --subject "$subject" \
+            --ref "$GITHUB_REF" \
+            --default-branch "$DEFAULT_BRANCH" \
+            --plugin-json .claude-plugin/plugin.json)
+          verdict=''
+          reason=''
+          version=''
+          while IFS= read -r line; do
+            case "$line" in
+              verdict=*) verdict="${line#verdict=}" ;;
+              reason=*) reason="${line#reason=}" ;;
+              version=*) version="${line#version=}" ;;
+            esac
+          done <<<"$detect_output"
+          if [[ "$verdict" == skip ]]; then
+            printf 'proceed=false\n' >> "$GITHUB_OUTPUT"
+            printf '::notice::%s\n' "$reason"
+            exit 0
+          fi
+          printf 'proceed=true\n' >> "$GITHUB_OUTPUT"
+          printf 'Release commit detected: %s (v%s) on %s\n' "$subject" "$version" "${{ github.ref_name }}"
+
+      - name: Configure git identity
+        if: steps.detect.outputs.proceed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Resolve current release version
+        if: steps.detect.outputs.proceed == 'true'
+        id: ver
+        run: |
+          set -euo pipefail
+          CURRENT=$(jq -r '.version' .claude-plugin/plugin.json)
+          {
+            echo "current=$CURRENT"
+            echo "tag=v${CURRENT}"
+          } >> "$GITHUB_OUTPUT"
+          echo "Releasing v${CURRENT}."
+
+      - name: Extract release notes from CHANGELOG.md
+        if: steps.detect.outputs.proceed == 'true'
+        id: notes
+        env:
+          CURRENT: ${{ steps.ver.outputs.current }}
+        run: |
+          set -euo pipefail
+          NOTES="${RUNNER_TEMP}/release-notes-v${CURRENT}.md"
+          if [ -f CHANGELOG.md ]; then
+            awk -v ver="${CURRENT}" '
+              BEGIN { gsub(/\./, "\\.", ver); pat = "^## v" ver "( |$)" }
+              $0 ~ pat                   { capture = 1; print; next }
+              capture && /^## v[0-9]/    { exit }
+              capture                    { print }
+            ' CHANGELOG.md > "$NOTES"
+          fi
+          if [ -s "$NOTES" ]; then
+            echo "use_notes_file=true" >> "$GITHUB_OUTPUT"
+            echo "::group::Extracted release notes for v${CURRENT}"
+            head -20 "$NOTES"
+            echo "::endgroup::"
+          else
+            echo "use_notes_file=false" >> "$GITHUB_OUTPUT"
+            # Hard-fail instead of silently auto-generating notes: v6.3.4/v6.3.5
+            # shipped undocumented precisely because this fell back without a
+            # signal (the #207 fix went unrecorded). This step only runs on a
+            # genuine release commit (detect.proceed == 'true' → subject `vX.Y.Z`
+            # == plugin.json), so it can never block the auto-cut next-patch
+            # bump commit — only a real release that forgot its entry. Fixing it
+            # is a one-line CHANGELOG.md add + re-push. hooks/tests/
+            # test_changelog_current.sh catches the same gap pre-release/local.
+            echo "::error title=Missing changelog entry::No '## v${CURRENT}' section in CHANGELOG.md. Every release commit MUST carry its own changelog entry before merge — add '## v${CURRENT} — YYYY-MM-DD' to CHANGELOG.md and re-push. (Closes the gap that shipped v6.3.4/#204 and v6.3.5/#205 with no entry and only auto-generated notes.)"
+            exit 1
+          fi
+          echo "path=$NOTES" >> "$GITHUB_OUTPUT"
+
+      - name: Download and verify release assets
+        if: steps.detect.outputs.proceed == 'true'
+        uses: actions/download-artifact@v8 # v8.0.1
+        with:
+          pattern: release-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/shepherd-release-assets
+
+      - name: Verify all release asset checksums
+        if: steps.detect.outputs.proceed == 'true'
+        shell: bash
+        env:
+          ASSET_DIR: ${{ runner.temp }}/shepherd-release-assets
+          VERSION: ${{ steps.ver.outputs.current }}
+        run: |
+          set -euo pipefail
+          ASSET_LIST="${ASSET_DIR}.txt"
+          scripts/verify-release-assets.sh "$ASSET_DIR" "$ASSET_LIST" "$VERSION"
+          scripts/verify-release-distribution.sh "$ASSET_DIR" "$VERSION"
+          mapfile -t release_files < "$ASSET_LIST"
+          ((${#release_files[@]} == 32))
+
+      # ─── Crates.io gate: hold the tag until the crate is actually published ──
+      - name: Verify crates.io publication precedes the tag
+        if: steps.detect.outputs.proceed == 'true'
+        shell: bash
+        env:
+          VERSION: ${{ steps.ver.outputs.current }}
+        run: |
+          set -euo pipefail
+          CRATE='shepherd-cli'
+          USER_AGENT='shepherd-release-workflow (+https://github.com/pzzld-org/shepherd)'
+          MAX_ATTEMPTS=6
+          RETRY_SECONDS=20
+          REQUEST_TIMEOUT=15
+          attempt=1
+          published=false
+          while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+            body=$(curl --silent --show-error --fail \
+              --max-time "$REQUEST_TIMEOUT" \
+              --header "User-Agent: ${USER_AGENT}" \
+              "https://crates.io/api/v1/crates/${CRATE}") || body=''
+            if [ -n "$body" ] \
+              && echo "$body" | jq -e --arg v "$VERSION" \
+                   '(.versions // []) | any(.num == $v)' >/dev/null 2>&1; then
+              published=true
+              break
+            fi
+            printf 'crates.io does not yet report %s %s published (attempt %s/%s)\n' \
+              "$CRATE" "$VERSION" "$attempt" "$MAX_ATTEMPTS" >&2
+            attempt=$((attempt + 1))
+            if [ "$attempt" -le "$MAX_ATTEMPTS" ]; then
+              sleep "$RETRY_SECONDS"
+            fi
+          done
+          if [ "$published" != true ]; then
+            printf '::error title=crates.io publish not verified::%s %s is not visible on crates.io after %s attempts (fail-closed; absent version, HTTP error, unparseable body, and timeout all land here). GitHub release publication must not start until the crate is published. Recover with: gh workflow run cargo-publish.yml -f version=%s -f publish=true\n' \
+              "$CRATE" "$VERSION" "$MAX_ATTEMPTS" "$VERSION" >&2
+            exit 1
+          fi
+          printf 'Verified %s %s is published on crates.io; proceeding to tag.\n' "$CRATE" "$VERSION"
+
+      # ─── Patch close: tag + GitHub release ─────────────────────────────────
+      - name: Tag the verified release commit
+        if: steps.detect.outputs.proceed == 'true'
+        env:
+          TAG: ${{ steps.ver.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            local_target=$(git rev-list -n 1 "$TAG")
+            [ "$local_target" = "$GITHUB_SHA" ] || {
+              printf 'existing local tag %s resolves to %s, expected event SHA %s\n' \
+                "$TAG" "$local_target" "$GITHUB_SHA" >&2
+              exit 1
+            }
+          else
+            git tag -a "$TAG" -m "$TAG"
+          fi
+          remote_direct=$(git ls-remote --tags origin "refs/tags/${TAG}" | awk 'NR == 1 { print $1 }')
+          remote_peeled=$(git ls-remote --tags origin "refs/tags/${TAG}^{}" | awk 'NR == 1 { print $1 }')
+          if [ -n "$remote_direct" ]; then
+            remote_target="${remote_peeled:-$remote_direct}"
+            [ "$remote_target" = "$GITHUB_SHA" ] || {
+              printf 'existing remote tag %s resolves to %s, expected event SHA %s\n' \
+                "$TAG" "$remote_target" "$GITHUB_SHA" >&2
+              exit 1
+            }
+            echo "Tag $TAG already points at the event SHA; skipping push."
+          else
+            git push origin "$TAG"
+          fi
+
+      - name: Create GitHub Release (CHANGELOG notes)
+        if: >-
+          steps.detect.outputs.proceed == 'true' &&
+          steps.notes.outputs.use_notes_file == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.ver.outputs.tag }}
+          NOTES: ${{ steps.notes.outputs.path }}
+          ASSET_DIR: ${{ runner.temp }}/shepherd-release-assets
+          ASSET_LIST: ${{ runner.temp }}/shepherd-release-assets.txt
+          VERSION: ${{ steps.ver.outputs.current }}
+        run: |
+          set -euo pipefail
+          mapfile -t release_files < "$ASSET_LIST"
+          ((${#release_files[@]} == 32)) || { echo 'missing verified release files' >&2; exit 1; }
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            release_state=$(gh release view "$TAG" --json isDraft,isPrerelease,tagName)
+            [ "$(jq -r '.tagName' <<<"$release_state")" = "$TAG" ]
+            [ "$(jq -r '.isPrerelease' <<<"$release_state")" = false ] || {
+              echo "existing release $TAG is unexpectedly a prerelease" >&2
+              exit 1
+            }
+            remote_dir=$(mktemp -d "${RUNNER_TEMP}/shepherd-existing-release.XXXXXX")
+            trap 'find "$remote_dir" -depth -delete' EXIT
+            gh release download "$TAG" --dir "$remote_dir"
+            scripts/verify-release-assets.sh "$remote_dir" "${remote_dir}.txt" "$VERSION"
+            diff --recursive --brief "$ASSET_DIR" "$remote_dir"
+            if [ "$(jq -r '.isDraft' <<<"$release_state")" = true ]; then
+              gh release edit "$TAG" --draft=false
+              echo "Published byte-identical recovered draft $TAG."
+            else
+              echo "Existing release $TAG is byte-identical; no upload required."
+            fi
+          else
+            gh release create "$TAG" --verify-tag --target "$GITHUB_SHA" --title "$TAG" --notes-file "$NOTES" "${release_files[@]}"
+          fi
+
+      - name: Create GitHub Release (auto-generated notes)
+        if: >-
+          steps.detect.outputs.proceed == 'true' &&
+          steps.notes.outputs.use_notes_file == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.ver.outputs.tag }}
+          ASSET_DIR: ${{ runner.temp }}/shepherd-release-assets
+          ASSET_LIST: ${{ runner.temp }}/shepherd-release-assets.txt
+          VERSION: ${{ steps.ver.outputs.current }}
+        run: |
+          set -euo pipefail
+          mapfile -t release_files < "$ASSET_LIST"
+          ((${#release_files[@]} == 32)) || { echo 'missing verified release files' >&2; exit 1; }
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            release_state=$(gh release view "$TAG" --json isDraft,isPrerelease,tagName)
+            [ "$(jq -r '.tagName' <<<"$release_state")" = "$TAG" ]
+            [ "$(jq -r '.isPrerelease' <<<"$release_state")" = false ] || {
+              echo "existing release $TAG is unexpectedly a prerelease" >&2
+              exit 1
+            }
+            remote_dir=$(mktemp -d "${RUNNER_TEMP}/shepherd-existing-release.XXXXXX")
+            trap 'find "$remote_dir" -depth -delete' EXIT
+            gh release download "$TAG" --dir "$remote_dir"
+            scripts/verify-release-assets.sh "$remote_dir" "${remote_dir}.txt" "$VERSION"
+            diff --recursive --brief "$ASSET_DIR" "$remote_dir"
+            if [ "$(jq -r '.isDraft' <<<"$release_state")" = true ]; then
+              gh release edit "$TAG" --draft=false
+              echo "Published byte-identical recovered draft $TAG."
+            else
+              echo "Existing release $TAG is byte-identical; no upload required."
+            fi
+          else
+            gh release create "$TAG" --verify-tag --target "$GITHUB_SHA" --title "$TAG" --generate-notes "${release_files[@]}"
+          fi

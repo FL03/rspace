@@ -38,6 +38,8 @@ required-features = ["default"]
 
 [dependencies]
 rspace-core = { workspace = true }
+rspace-derive = { optional = true, workspace = true }
+rspace-macros = { optional = true, workspace = true }
 rspace-traits = { workspace = true }
 
 [dev-dependencies]
@@ -46,23 +48,29 @@ tracing = { features = ["default", "log"], workspace = true }
 tracing-subscriber = { features = ["fmt", "env-filter"], workspace = true }
 
 [features]
-default = ["std"]
+default = ["macros", "std"]
 
 full = [
   "default",
   "complex",
+  "derive",
   "json",
   "rand",
   "serde",
 ]
 
 # ********* [FF] Features *********
+derive = ["dep:rspace-derive"]
+
 macros = [
+  "dep:rspace-macros",
   "rspace-core/macros",
 ]
 
 nightly = [
   "rspace-core/nightly",
+  "rspace-derive?/nightly",
+  "rspace-macros?/nightly",
 ]
 
 json = [

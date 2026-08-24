@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "axiom-node",
+      "runtimeExecutable": "cargo",
+      "runtimeArgs": ["run", "-p", "axiom-node"],
+      "port": 8080
+    },
+    {
+      "name": "axiom-node-rpc",
+      "runtimeExecutable": "cargo",
+      "runtimeArgs": ["run", "-p", "axiom-node"],
+      "port": 9090
+    },
+    {
+      "name": "axiom-mcp",
+      "runtimeExecutable": "cargo",
+      "runtimeArgs": ["run", "-p", "axiom-mcp"],
+      "port": 0
+    }
+  ]
+}
